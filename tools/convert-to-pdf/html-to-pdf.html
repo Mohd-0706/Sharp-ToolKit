@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to PDF Converter | PDF Tools Pro</title>
+    
+    <!-- Preload resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            light: '#4f46e5',
+                            dark: '#7c3aed',
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#34d399',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 8s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-reverse': 'float-reverse 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        'float-reverse': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom styles for drag and drop */
+        .progress-bar-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+
+        /* HTML Editor Styles */
+        .html-editor {
+            font-family: 'Courier New', Courier, monospace;
+            resize: vertical;
+            background-color: white;
+            color: #1e293b;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+
+        .dark .html-editor {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-color: #334155;
+        }
+
+        .html-editor:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-900 dark:to-dark-800 text-gray-800 dark:text-gray-200 min-h-screen">
+    <!-- Header -->
+    <header class="site-header fixed w-full z-40 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center">
+                <div class="text-xl font-bold">
+                    <span class="text-primary-light dark:text-primary-dark">PDF Tools Pro</span> 
+                </div>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="/pages/index.html" class="nav-link relative group font-medium">
+                    Home
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/pages/popular-tools.html" class="nav-link relative group font-medium">
+                    Popular Tools
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/pages/all-tools.html" class="nav-link relative group font-medium">
+                    All Tools
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/pages/how-it-works.html" class="nav-link relative group font-medium">
+                    How It Works
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </nav>
+
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <span class="dark:hidden">
+                    <i class="fas fa-moon text-gray-700"></i>
+                </span>
+                <span class="hidden dark:inline">
+                    <i class="fas fa-sun text-yellow-300"></i>
+                </span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content pt-20 pb-16">
+        <div class="container mx-auto px-4 sm:px-6 py-8">
+            <!-- Hero Section -->
+            <section class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark bg-clip-text text-transparent">
+                    HTML to PDF Converter
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    Convert HTML files to PDF documents with ease. Just upload your HTML file or paste your code below.
+                </p>
+            </section>
+
+            <!-- Upload Section -->
+            <section class="max-w-3xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">
+                <div id="uploadBox" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 hover:border-primary-light dark:hover:border-primary-dark hover:bg-primary-light/5 dark:hover:bg-primary-dark/5 hover:shadow-lg"
+                    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                    <input type="file" id="fileInput" accept=".html,.htm" class="hidden" />
+                    <div class="flex flex-col items-center justify-center">
+                        <i class="fas fa-file-code text-5xl text-primary-light dark:text-primary-dark mb-4 animate-float"></i>
+                        <h3 class="text-xl font-semibold mb-2">Upload HTML File</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Click to browse or drag & drop your HTML file here</p>
+                    </div>
+                    <div id="file-name" class="mt-4 text-primary-light dark:text-primary-dark font-medium"></div>
+                    <div id="progressContainer" class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 hidden">
+                        <div id="progressBar" class="bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark h-2 rounded-full relative overflow-hidden" style="width: 0%">
+                            <div class="progress-bar-shine"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="statusMessage" class="mt-4 p-4 rounded-lg bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark border-l-4 border-primary-light dark:border-primary-dark hidden"></div>
+            </section>
+
+            <!-- Editor Section -->
+            <section id="editorSection" class="max-w-3xl mx-auto bg-white dark:bg-dark-800 rounded-xl shadow-lg p-6 mb-8 hidden">
+                <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                    <h2 class="text-2xl font-semibold text-primary-light dark:text-primary-dark">HTML Editor</h2>
+                    <div class="flex gap-3 flex-wrap">
+                        <button id="convertBtn" class="px-6 py-2 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-white rounded-lg font-medium flex items-center hover:shadow-lg transition-all duration-300 hover:from-primary-light/90 hover:to-secondary-light/90 dark:hover:from-primary-dark/90 dark:hover:to-secondary-dark/90 tooltip">
+                            <i class="fas fa-file-pdf mr-2"></i> Convert to PDF
+                            <span class="tooltiptext">Convert HTML to PDF</span>
+                        </button>
+                        <button id="downloadBtn" class="px-6 py-2 border-2 border-secondary-light dark:border-secondary-dark text-secondary-light dark:text-secondary-dark rounded-lg font-medium flex items-center hover:bg-secondary-light/10 dark:hover:bg-secondary-dark/10 transition-all duration-300 tooltip" disabled>
+                            <i class="fas fa-download mr-2"></i> Download PDF
+                            <span class="tooltiptext">Download PDF file</span>
+                        </button>
+                        <button id="resetBtn" class="px-6 py-2 border-2 border-red-500 text-red-500 rounded-lg font-medium flex items-center hover:bg-red-500/10 transition-all duration-300 tooltip">
+                            <i class="fas fa-redo mr-2"></i> Reset
+                            <span class="tooltiptext">Clear everything</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loadingSpinner" class="w-12 h-12 border-4 border-primary-light/30 dark:border-primary-dark/30 border-t-primary-light dark:border-t-primary-dark border-r-primary-light dark:border-r-primary-dark rounded-full animate-spin mx-auto my-8 hidden"></div>
+
+                <textarea id="htmlEditor" class="html-editor w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:border-primary-light dark:focus:border-primary-dark" placeholder="Your HTML content will appear here..."></textarea>
+            </section>
+        </div>
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-primary-light dark:bg-primary-dark text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible hover:bg-primary-light/90 dark:hover:bg-primary-dark/90">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Back to Home -->
+    <a href="/pages/index.html" class="fixed bottom-6 left-6 w-12 h-12 bg-primary-light dark:bg-primary-dark text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:bg-primary-light/90 dark:hover:bg-primary-dark/90">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- Particles Background -->
+    <div id="particles-js" class="fixed inset-0 -z-50 opacity-20 dark:opacity-10"></div>
+
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const uploadBox = document.getElementById('uploadBox');
+        const fileNameDisplay = document.getElementById('file-name');
+        const htmlEditor = document.getElementById('htmlEditor');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const editorSection = document.getElementById('editorSection');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const statusMessage = document.getElementById('statusMessage');
+        const themeToggle = document.getElementById('theme-toggle');
+        const backToTop = document.getElementById('backToTop');
+
+        // State variables
+        let pdfBlob = null;
+        let currentFileName = '';
+
+        // Event Listeners
+        uploadBox.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+        convertBtn.addEventListener('click', convertToPDF);
+        downloadBtn.addEventListener('click', downloadPDF);
+        resetBtn.addEventListener('click', resetConverter);
+        themeToggle.addEventListener('click', toggleTheme);
+        window.addEventListener('scroll', handleBackToTop);
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Set up drag and drop
+        function setupDragAndDrop() {
+            uploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadBox.classList.add('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/10', 'dark:bg-primary-dark/10');
+            });
+
+            uploadBox.addEventListener('dragleave', () => {
+                uploadBox.classList.remove('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/10', 'dark:bg-primary-dark/10');
+            });
+
+            uploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/10', 'dark:bg-primary-dark/10');
+
+                const file = e.dataTransfer.files[0];
+                if (file && (file.name.endsWith('.html') || file.name.endsWith('.htm'))) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect({ target: { files: e.dataTransfer.files } });
+                } else {
+                    showStatusMessage('Please drop a HTML file (.html or .htm)', 'error');
+                }
+            });
+        }
+
+        // Functions
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processHTMLFile(file);
+            }
+        }
+
+        function processHTMLFile(file) {
+            // Validate file
+            if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+                showStatusMessage('Please upload a valid HTML file (.html or .htm)', 'error');
+                return;
+            }
+
+            try {
+                // Show loading state
+                loadingSpinner.classList.remove('hidden');
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '30%';
+                editorSection.classList.add('hidden');
+                downloadBtn.disabled = true;
+                pdfBlob = null;
+                currentFileName = file.name;
+
+                // Read file as text
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        htmlEditor.value = e.target.result;
+                        fileNameDisplay.textContent = file.name;
+
+                        // Complete processing
+                        progressBar.style.width = '100%';
+                        setTimeout(() => {
+                            progressContainer.classList.add('hidden');
+                            progressBar.style.width = '0';
+                            loadingSpinner.classList.add('hidden');
+                            editorSection.classList.remove('hidden');
+                            showStatusMessage('HTML file loaded successfully!', 'success');
+                        }, 500);
+
+                    } catch (error) {
+                        console.error('Error processing HTML file:', error);
+                        showStatusMessage('Error processing HTML file', 'error');
+                        resetLoadingState();
+                    }
+                };
+
+                reader.onerror = function () {
+                    showStatusMessage('Error reading file', 'error');
+                    resetLoadingState();
+                };
+
+                reader.readAsText(file);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatusMessage('Error processing HTML file', 'error');
+                resetLoadingState();
+            }
+        }
+
+        function convertToPDF() {
+            if (!htmlEditor.value) {
+                showStatusMessage('Please upload or enter HTML content first!', 'error');
+                return;
+            }
+
+            try {
+                // Show loading state
+                loadingSpinner.classList.remove('hidden');
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '30%';
+                downloadBtn.disabled = true;
+
+                // Initialize PDF
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                // Set margins and formatting
+                const margins = {
+                    top: 20,
+                    left: 15,
+                    right: 15,
+                    width: 180
+                };
+
+                pdf.setFont('helvetica');
+                pdf.setFontSize(11);
+                pdf.setTextColor(30, 30, 30);
+
+                // Split text and add to PDF
+                const lines = pdf.splitTextToSize(htmlEditor.value, margins.width);
+                let y = margins.top;
+                const lineHeight = 6;
+
+                // Simulate progress
+                let progress = 30;
+                const progressInterval = setInterval(() => {
+                    progress += 2;
+                    if (progress < 90) {
+                        progressBar.style.width = `${progress}%`;
+                    }
+                }, 100);
+
+                // Process lines
+                setTimeout(() => {
+                    try {
+                        lines.forEach(line => {
+                            if (y > 280) { // Near bottom of page
+                                pdf.addPage();
+                                y = margins.top;
+                            }
+                            pdf.text(line, margins.left, y);
+                            y += lineHeight;
+                        });
+
+                        // Complete conversion
+                        pdfBlob = pdf.output('blob');
+                        clearInterval(progressInterval);
+                        progressBar.style.width = '100%';
+
+                        setTimeout(() => {
+                            progressContainer.classList.add('hidden');
+                            progressBar.style.width = '0';
+                            loadingSpinner.classList.add('hidden');
+                            downloadBtn.disabled = false;
+                            showStatusMessage('PDF conversion complete! Click Download PDF to save.', 'success');
+                        }, 500);
+
+                    } catch (error) {
+                        clearInterval(progressInterval);
+                        console.error('Error generating PDF:', error);
+                        showStatusMessage('Error generating PDF: ' + error.message, 'error');
+                        resetLoadingState();
+                    }
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatusMessage('Error converting to PDF: ' + error.message, 'error');
+                resetLoadingState();
+            }
+        }
+
+        function downloadPDF() {
+            if (!pdfBlob) {
+                showStatusMessage('No PDF to download. Please convert first.', 'error');
+                return;
+            }
+
+            try {
+                const url = URL.createObjectURL(pdfBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = currentFileName.replace(/\.[^/.]+$/, "") + '.pdf' || 'converted.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showStatusMessage('PDF download started!', 'success');
+            } catch (error) {
+                console.error('Error downloading PDF:', error);
+                showStatusMessage('Error downloading PDF', 'error');
+            }
+        }
+
+        function resetConverter() {
+            try {
+                fileInput.value = '';
+                htmlEditor.value = '';
+                pdfBlob = null;
+                currentFileName = '';
+                fileNameDisplay.textContent = '';
+                downloadBtn.disabled = true;
+                editorSection.classList.add('hidden');
+                statusMessage.classList.add('hidden');
+                showStatusMessage('Converter has been reset', 'info');
+            } catch (error) {
+                console.error('Error resetting converter:', error);
+                showStatusMessage('Error resetting converter', 'error');
+            }
+        }
+
+        function resetLoadingState() {
+            loadingSpinner.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            progressBar.style.width = '0';
+        }
+
+        function showStatusMessage(message, type) {
+            try {
+                statusMessage.textContent = message;
+                statusMessage.className = `mt-4 p-4 rounded-lg border-l-4 font-medium ${type === 'error' ? 'bg-red-500/10 text-red-500 border-red-500' : type === 'success' ? 'bg-secondary-light/10 dark:bg-secondary-dark/10 text-secondary-light dark:text-secondary-dark border-secondary-light dark:border-secondary-dark' : 'bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark border-primary-light dark:border-primary-dark'}`;
+                statusMessage.classList.remove('hidden');
+
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    statusMessage.classList.add('hidden');
+                }, 5000);
+            } catch (error) {
+                console.error('Error showing status message:', error);
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        function handleBackToTop() {
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.remove('opacity-100', 'visible');
+                backToTop.classList.add('opacity-0', 'invisible');
+            }
+        }
+
+        // Initialize particles
+        function initParticles() {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#4f46e5"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.3,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#4f46e5",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+        }
+
+        // Initialize
+        function init() {
+            // Set initial theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Initialize drag and drop
+            setupDragAndDrop();
+
+            // Initialize particles
+            initParticles();
+        }
+
+        // Run initialization when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

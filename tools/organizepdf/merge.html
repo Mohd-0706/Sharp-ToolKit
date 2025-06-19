@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merge PDF Files | PDF Tools Pro</title>
+
+  <!-- Preload resources -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    as="style">
+
+  <!-- Favicon -->
+  <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+  <!-- PDF Libraries -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              light: '#4f46e5',
+              dark: '#7c3aed',
+            },
+            secondary: {
+              light: '#10b981',
+              dark: '#34d399',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+          },
+          animation: {
+            'gradient-x': 'gradient-x 8s ease infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'float-reverse': 'float-reverse 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            'gradient-x': {
+              '0%, 100%': {
+                'background-size': '200% 200%',
+                'background-position': 'left center'
+              },
+              '50%': {
+                'background-size': '200% 200%',
+                'background-position': 'right center'
+              }
+            },
+            'float': {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            'float-reverse': {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(10px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom styles for drag and drop */
+    .pdf-item-ghost {
+      opacity: 0.5;
+      background: rgba(79, 70, 229, 0.1);
+      border: 2px dashed #4f46e5;
+    }
+
+    .progress-bar-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0) 100%);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .dark ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background: #4f46e5;
+    }
+
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #7c3aed;
+    }
+  </style>
+</head>
+
+<body
+  class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-900 dark:to-dark-800 text-gray-800 dark:text-gray-200 min-h-screen">
+  <!-- Header -->
+  <header
+    class="site-header fixed w-full z-40 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md shadow-sm transition-all duration-300">
+    <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center">
+
+        <div class="text-xl font-bold"><span class="text-primary-light dark:text-primary-dark"> </span> 
+        </div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="/pages/index.html" class="nav-link relative group font-medium">
+          Home
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/pages/popular-tools.html" class="nav-link relative group font-medium">
+          Popular Tools
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/pages/all-tools.html" class="nav-link relative group font-medium">
+          All Tools
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/pages/how-it-works.html" class="nav-link relative group font-medium">
+          How It Works
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+        </a>
+      </nav>
+
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+        <span class="dark:hidden">
+          <i class="fas fa-moon text-gray-700"></i>
+        </span>
+        <span class="hidden dark:inline">
+          <i class="fas fa-sun text-yellow-300"></i>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content pt-20 pb-16">
+    <div class="container mx-auto px-4 sm:px-6 py-8">
+      <!-- Hero Section -->
+      <section class="text-center mb-12">
+        <h1
+          class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark bg-clip-text text-transparent">
+          Merge PDF Files
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Combine multiple PDF documents into one file. Drag and drop to reorder pages.
+        </p>
+      </section>
+
+      <!-- Upload Section -->
+      <section class="max-w-3xl mx-auto mb-8">
+        <div id="uploadBox"
+          class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 hover:border-primary-light dark:hover:border-primary-dark hover:bg-primary-light/5 dark:hover:bg-primary-dark/5 hover:shadow-lg">
+          <input type="file" id="fileInput" accept="application/pdf" class="hidden" />
+          <div class="flex flex-col items-center justify-center">
+            <i
+              class="fas fa-cloud-upload-alt text-5xl text-primary-light dark:text-primary-dark mb-4 animate-float"></i>
+            <h3 class="text-xl font-semibold mb-2">Upload PDF File</h3>
+            <p class="text-gray-500 dark:text-gray-400">Click to browse or drag & drop your PDF file here</p>
+          </div>
+          <div id="progressContainer" class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 hidden">
+            <div id="progressBar"
+              class="bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark h-2 rounded-full relative overflow-hidden"
+              style="width: 0%">
+              <div class="progress-bar-shine"></div>
+            </div>
+          </div>
+        </div>
+        <div id="statusMessage"
+          class="mt-4 p-4 rounded-lg bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark border-l-4 border-primary-light dark:border-primary-dark hidden">
+          Please upload at least one PDF file
+        </div>
+      </section>
+
+      <!-- Add PDF Button -->
+      <div id="addPdfBtnContainer" class="flex justify-center mb-8 hidden">
+        <button id="addPdfBtn"
+          class="px-6 py-3 border-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark rounded-full font-medium flex items-center hover:bg-primary-light/10 dark:hover:bg-primary-dark/10 transition-all duration-300">
+          <i class="fas fa-plus mr-2"></i> Add Another PDF
+        </button>
+      </div>
+
+      <!-- Editor Section -->
+      <section id="editorSection"
+        class="max-w-3xl mx-auto bg-white dark:bg-dark-800 rounded-xl shadow-lg p-6 mb-8 hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold text-primary-light dark:text-primary-dark">Merge Editor</h2>
+          <div id="totalPages" class="text-gray-600 dark:text-gray-400">Total pages: 0</div>
+        </div>
+
+        <p class="text-gray-600 dark:text-gray-400 mb-4">Drag and drop to reorder your PDFs before merging:</p>
+
+        <ul id="pdfList" class="space-y-3">
+          <!-- PDF items will be added here dynamically -->
+        </ul>
+      </section>
+
+      <!-- Spinner -->
+      <div id="spinner"
+        class="w-12 h-12 border-4 border-primary-light/30 dark:border-primary-dark/30 border-t-primary-light dark:border-t-primary-dark border-r-primary-light dark:border-r-primary-dark rounded-full animate-spin mx-auto my-8 hidden">
+      </div>
+
+      <!-- Action Buttons -->
+      <div id="actionButtons" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
+        <button id="mergeBtn"
+          class="px-8 py-3 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-white rounded-full font-medium flex items-center hover:shadow-lg transition-all duration-300 hover:from-primary-light/90 hover:to-secondary-light/90 dark:hover:from-primary-dark/90 dark:hover:to-secondary-dark/90">
+          <i class="fas fa-object-group mr-2"></i> Merge PDFs
+        </button>
+        <button id="resetBtn"
+          class="px-8 py-3 border-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark rounded-full font-medium flex items-center hover:bg-primary-light/10 dark:hover:bg-primary-dark/10 transition-all duration-300">
+          <i class="fas fa-redo mr-2"></i> Reset
+        </button>
+      </div>
+
+      <!-- Download Section -->
+      <section id="downloadSection" class="max-w-3xl mx-auto text-center hidden">
+        <div id="successMessage"
+          class="p-4 mb-6 rounded-lg bg-secondary-light/10 dark:bg-secondary-dark/10 text-secondary-light dark:text-secondary-dark border-l-4 border-secondary-light dark:border-secondary-dark">
+          Your merged PDF is ready!
+        </div>
+        <button id="downloadBtn"
+          class="px-8 py-3 bg-secondary-light dark:bg-secondary-dark text-white rounded-full font-medium flex items-center mx-auto hover:shadow-lg transition-all duration-300 hover:bg-secondary-light/90 dark:hover:bg-secondary-dark/90">
+          <i class="fas fa-download mr-2"></i> Download Merged PDF
+        </button>
+      </section>
+    </div>
+  </main>
+
+ 
+
+  <!-- Back to Top Button -->
+  <button id="backToTop"
+    class="fixed bottom-6 right-6 w-12 h-12 bg-primary-light dark:bg-primary-dark text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible hover:bg-primary-light/90 dark:hover:bg-primary-dark/90">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!--Back to Home-->
+  <a href="/pages/all-tools.html" class="fixed bottom-6 left-6 w-12 h-12 bg-primary-light dark:bg-primary-dark text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:bg-primary-light/90 dark:hover:bg-primary-dark/90">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+
+  <!-- Particles Background -->
+  <div id="particles-js" class="fixed inset-0 -z-50 opacity-20 dark:opacity-10"></div>
+
+  <script>
+    // Initialize PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+    // DOM elements
+    const uploadBox = document.getElementById('uploadBox');
+    const fileInput = document.getElementById('fileInput');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const statusMessage = document.getElementById('statusMessage');
+    const addPdfBtnContainer = document.getElementById('addPdfBtnContainer');
+    const addPdfBtn = document.getElementById('addPdfBtn');
+    const editorSection = document.getElementById('editorSection');
+    const pdfList = document.getElementById('pdfList');
+    const totalPagesEl = document.getElementById('totalPages');
+    const actionButtons = document.getElementById('actionButtons');
+    const mergeBtn = document.getElementById('mergeBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const spinner = document.getElementById('spinner');
+    const downloadSection = document.getElementById('downloadSection');
+    const successMessage = document.getElementById('successMessage');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const backToTop = document.getElementById('backToTop');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    // Store loaded PDFs and merged PDF
+    let pdfs = [];
+    let nextPdfId = 1;
+    let mergedPdfBlob = null;
+    let sortable;
+
+    // Initialize Sortable for drag and drop reordering
+    function initSortable() {
+      sortable = new Sortable(pdfList, {
+        animation: 150,
+        handle: '.pdf-item-handle',
+        ghostClass: 'pdf-item-ghost',
+        onEnd: updateTotalPages
+      });
+    }
+
+    // Set up drag and drop
+    function setupDragAndDrop() {
+      uploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBox.classList.add('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/10', 'dark:bg-primary-dark/10');
+      });
+
+      uploadBox.addEventListener('dragleave', () => {
+        uploadBox.classList.remove('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/10', 'dark:bg-primary-dark/10');
+      });
+
+      uploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadBox.classList.remove('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/10', 'dark:bg-primary-dark/10');
+
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === 'application/pdf') {
+          fileInput.files = e.dataTransfer.files;
+          handleFileUpload(file);
+        } else {
+          showStatusMessage('Please drop a PDF file', 'error');
+        }
+      });
+    }
+
+    // Handle file selection
+    uploadBox.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        handleFileUpload(e.target.files[0]);
+      }
+    });
+
+    // Handle file upload and processing
+    async function handleFileUpload(file) {
+      if (!file || file.type !== 'application/pdf') {
+        showStatusMessage('Please upload a valid PDF file', 'error');
+        return;
+      }
+
+      try {
+        const pdfId = `pdf${nextPdfId++}`;
+
+        // Show loading state
+        progressContainer.classList.remove('hidden');
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'none';
+        void progressBar.offsetWidth;
+        progressBar.style.transition = 'width 0.4s ease-out';
+
+        spinner.classList.remove('hidden');
+        hideStatusMessage();
+
+        // Initial progress
+        updateProgress(10);
+
+        // Read file as array buffer
+        const arrayBuffer = await readFileAsArrayBuffer(file);
+        updateProgress(30);
+
+        // Load with PDF.js for page count
+        const pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+        updateProgress(70);
+
+        const pageCount = pdfDoc.numPages;
+        updateProgress(90);
+
+        // Store PDF data
+        pdfs.push({
+          id: pdfId,
+          name: file.name,
+          data: arrayBuffer,
+          pages: pageCount,
+          file: file
+        });
+
+        // Complete progress
+        updateProgress(100);
+        setTimeout(() => {
+          progressContainer.classList.add('hidden');
+        }, 500);
+
+        // Update UI
+        updatePdfList();
+        updateTotalPages();
+
+        // Show editor section and buttons if first PDF
+        if (pdfs.length === 1) {
+          editorSection.classList.remove('hidden');
+          addPdfBtnContainer.classList.remove('hidden');
+          actionButtons.classList.remove('hidden');
+          showStatusMessage('Ready to merge', 'info');
+        } else {
+          showStatusMessage(`Added ${file.name} (${pageCount} pages)`, 'info');
+        }
+      } catch (error) {
+        console.error('Error processing PDF:', error);
+        showStatusMessage(`Error processing PDF: ${error.message}`, 'error');
+        progressBar.style.width = '0%';
+        progressContainer.classList.add('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // Update progress bar
+    function updateProgress(percent) {
+      progressBar.style.width = `${Math.min(percent, 100)}%`;
+
+      // Add slight random movement to make it feel more natural
+      if (percent < 100) {
+        const randomFluctuation = Math.random() * 3 - 1.5;
+        progressBar.style.width = `${Math.min(percent + randomFluctuation, 99)}%`;
+      }
+    }
+
+    // Helper function to read file as array buffer
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Error reading file'));
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    // Update the PDF list in the editor
+    function updatePdfList() {
+      pdfList.innerHTML = '';
+
+      pdfs.forEach(pdf => {
+        const listItem = document.createElement('li');
+        listItem.className = 'pdf-item bg-gray-100 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 cursor-move transition-colors hover:bg-primary-light/10 dark:hover:bg-primary-dark/10 hover:border-primary-light dark:hover:border-primary-dark';
+        listItem.dataset.id = pdf.id;
+        listItem.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="pdf-item-handle mr-3 text-gray-500 dark:text-gray-400 cursor-move">
+                            <i class="fas fa-grip-vertical"></i>
+                        </div>
+                        <div class="pdf-item-info flex-grow">
+                            <div class="pdf-item-name font-medium">${pdf.name}</div>
+                            <div class="pdf-item-pages text-sm text-gray-500 dark:text-gray-400">${pdf.pages} pages</div>
+                        </div>
+                        <button class="pdf-item-remove w-8 h-8 rounded-full flex items-center justify-center text-red-500 hover:bg-red-500/10 transition-colors" data-id="${pdf.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+        pdfList.appendChild(listItem);
+      });
+
+      // Add event listeners to remove buttons
+      document.querySelectorAll('.pdf-item-remove').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const pdfId = e.currentTarget.dataset.id;
+          removePdf(pdfId);
+        });
+      });
+
+      // Initialize Sortable if not already initialized
+      if (!sortable) {
+        initSortable();
+      }
+    }
+
+    // Remove a PDF from the list
+    function removePdf(pdfId) {
+      // Remove from array
+      pdfs = pdfs.filter(pdf => pdf.id !== pdfId);
+
+      // Update UI
+      updatePdfList();
+      updateTotalPages();
+
+      // Hide sections if no PDFs left
+      if (pdfs.length === 0) {
+        editorSection.classList.add('hidden');
+        addPdfBtnContainer.classList.add('hidden');
+        actionButtons.classList.add('hidden');
+        downloadSection.classList.add('hidden');
+        showStatusMessage('Please upload at least one PDF file', 'info');
+      } else {
+        showStatusMessage('Ready to merge', 'info');
+      }
+    }
+
+    // Update the total pages count
+    function updateTotalPages() {
+      const totalPages = pdfs.reduce((sum, pdf) => sum + pdf.pages, 0);
+      totalPagesEl.textContent = `Total pages: ${totalPages}`;
+    }
+
+    // Merge PDFs function
+    async function mergePDFs() {
+      if (pdfs.length === 0) {
+        showStatusMessage('Please upload at least one PDF file first', 'error');
+        return;
+      }
+
+      try {
+        showStatusMessage('Merging PDFs...', 'info');
+        mergeBtn.disabled = true;
+        spinner.classList.remove('hidden');
+
+        const mergedPdf = await PDFLib.PDFDocument.create();
+
+        // Get the current order from the DOM (in case user reordered)
+        const pdfItems = Array.from(document.querySelectorAll('.pdf-item'));
+        const orderedPdfs = pdfItems.map(item => {
+          const pdfId = item.dataset.id;
+          return pdfs.find(pdf => pdf.id === pdfId);
+        }).filter(Boolean);
+
+        // Merge PDFs in current order
+        for (const pdf of orderedPdfs) {
+          const pdfDoc = await PDFLib.PDFDocument.load(pdf.data);
+          const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+          pages.forEach(page => mergedPdf.addPage(page));
+        }
+
+        // Save merged PDF
+        const pdfBytes = await mergedPdf.save();
+        mergedPdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+        // Show download section
+        downloadSection.classList.remove('hidden');
+        successMessage.textContent = `Successfully merged ${pdfs.length} PDFs with ${pdfs.reduce((sum, pdf) => sum + pdf.pages, 0)} total pages!`;
+        showStatusMessage('', 'info');
+
+        // Scroll to download section
+        downloadSection.scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        console.error('Error merging PDFs:', error);
+        showStatusMessage('Error merging PDFs: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+        mergeBtn.disabled = false;
+      }
+    }
+
+    // Download merged PDF
+    function downloadMergedPdf() {
+      if (!mergedPdfBlob) return;
+
+      try {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(mergedPdfBlob);
+        link.download = 'Merged.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Error downloading merged PDF:', error);
+        showStatusMessage('Error downloading merged PDF', 'error');
+      }
+    }
+
+    // Reset function
+    function resetTool() {
+      try {
+        // Reset file input
+        fileInput.value = '';
+
+        // Reset PDFs array
+        pdfs = [];
+        nextPdfId = 1;
+        mergedPdfBlob = null;
+
+        // Reset UI elements
+        editorSection.classList.add('hidden');
+        addPdfBtnContainer.classList.add('hidden');
+        actionButtons.classList.add('hidden');
+        downloadSection.classList.add('hidden');
+        pdfList.innerHTML = '';
+        totalPagesEl.textContent = 'Total pages: 0';
+        progressContainer.classList.add('hidden');
+        progressBar.style.width = '0';
+        spinner.classList.add('hidden');
+
+        showStatusMessage('Please upload at least one PDF file', 'info');
+      } catch (error) {
+        console.error('Error resetting tool:', error);
+        showStatusMessage('Error resetting tool', 'error');
+      }
+    }
+
+    // Show status message
+    function showStatusMessage(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = `mt-4 p-4 rounded-lg border-l-4 font-medium ${type === 'error' ? 'bg-red-500/10 text-red-500 border-red-500' : type === 'success' ? 'bg-secondary-light/10 dark:bg-secondary-dark/10 text-secondary-light dark:text-secondary-dark border-secondary-light dark:border-secondary-dark' : 'bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark border-primary-light dark:border-primary-dark'}`;
+      statusMessage.classList.remove('hidden');
+    }
+
+    // Hide status message
+    function hideStatusMessage() {
+      statusMessage.classList.add('hidden');
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Back to top button
+    function handleBackToTop() {
+      if (window.scrollY > 300) {
+        backToTop.classList.remove('opacity-0', 'invisible');
+        backToTop.classList.add('opacity-100', 'visible');
+      } else {
+        backToTop.classList.remove('opacity-100', 'visible');
+        backToTop.classList.add('opacity-0', 'invisible');
+      }
+    }
+
+    // Initialize particles
+    function initParticles() {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#4f46e5"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            },
+            "polygon": {
+              "nb_sides": 5
+            }
+          },
+          "opacity": {
+            "value": 0.3,
+            "random": false,
+            "anim": {
+              "enable": false,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 40,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#4f46e5",
+            "opacity": 0.2,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 140,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 400,
+              "size": 40,
+              "duration": 2,
+              "opacity": 8,
+              "speed": 3
+            },
+            "repulse": {
+              "distance": 200,
+              "duration": 0.4
+            },
+            "push": {
+              "particles_nb": 4
+            },
+            "remove": {
+              "particles_nb": 2
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    }
+
+    // Event listeners
+    addPdfBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      fileInput.click();
+    });
+    mergeBtn.addEventListener('click', mergePDFs);
+    resetBtn.addEventListener('click', resetTool);
+    downloadBtn.addEventListener('click', downloadMergedPdf);
+    themeToggle.addEventListener('click', toggleTheme);
+    window.addEventListener('scroll', handleBackToTop);
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initialize
+    function init() {
+      // Set initial theme
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+
+      // Initialize drag and drop
+      setupDragAndDrop();
+
+      // Initialize particles
+      initParticles();
+    }
+
+    // Run initialization when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Editor Tool</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .toolbar {
+            display: flex;
+            background-color: #34495e;
+            padding: 10px;
+            color: white;
+            flex-wrap: wrap;
+        }
+        
+        .tool-section {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-section h3 {
+            margin: 0 10px 0 0;
+            font-size: 14px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.active {
+            background-color: #2ecc71;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-upload-btn {
+            background-color: #27ae60;
+        }
+        
+        .file-upload-btn:hover {
+            background-color: #219653;
+        }
+        
+        .save-btn {
+            background-color: #e74c3c;
+        }
+        
+        .save-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-section h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        
+        .pdf-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #95a5a6;
+            padding: 20px;
+            overflow: auto;
+            align-items: center;
+        }
+        
+        .canvas-container {
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            background-color: white;
+            margin-bottom: 20px;
+        }
+        
+        .page-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .zoom-controls button {
+            margin: 2px;
+            padding: 5px 10px;
+        }
+        
+        .properties-panel {
+            margin-top: 10px;
+        }
+        
+        .properties-panel label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .properties-panel input, .properties-panel select, .properties-panel textarea {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+        }
+        
+        .color-picker input {
+            flex: 1;
+            margin-right: 5px;
+        }
+        
+        .thumbnail {
+            width: 100%;
+            height: auto;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .thumbnail:hover {
+            border-color: #3498db;
+        }
+        
+        .thumbnail.active {
+            border-color: #e74c3c;
+        }
+        
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .thumbnail-container img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #bdc3c7;
+        }
+        
+        .thumbnail-container img:hover {
+            border-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PDF Editor Tool</h1>
+        </div>
+        
+        <div class="toolbar">
+            <div class="tool-section">
+                <h3>File:</h3>
+                <input type="file" id="pdf-upload" accept=".pdf">
+                <button class="file-upload-btn" id="upload-btn">Upload PDF</button>
+                <button class="save-btn" id="save-btn">Save PDF</button>
+            </div>
+            
+            <div class="tool-section">
+                <h3>Edit:</h3>
+                <button id="text-btn">Add Text</button>
+                <button id="image-btn">Add Image</button>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                <button id="rectangle-btn">Rectangle</button>
+                <button id="circle-btn">Circle</button>
+                <button id="line-btn">Line</button>
+                <button id="highlight-btn">Highlight</button>
+                <button id="comment-btn">Add Comment</button>
+                <button id="delete-btn">Delete</button>
+            </div>
+            
+            <div class="tool-section">
+                <h3>View:</h3>
+                <button id="zoom-in-btn">Zoom In</button>
+                <button id="zoom-out-btn">Zoom Out</button>
+                <button id="zoom-fit-btn">Fit to Page</button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Pages</h3>
+                    <div id="page-thumbnails"></div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Properties</h3>
+                    <div class="properties-panel" id="properties-panel">
+                        <div id="text-properties" style="display: none;">
+                            <label for="text-content">Text:</label>
+                            <textarea id="text-content" rows="3"></textarea>
+                            <label for="text-font">Font:</label>
+                            <select id="text-font">
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                            <label for="text-size">Size:</label>
+                            <input type="number" id="text-size" min="8" max="72" value="16">
+                            <div class="color-picker">
+                                <label for="text-color">Color:</label>
+                                <input type="color" id="text-color" value="#000000">
+                            </div>
+                        </div>
+                        
+                        <div id="shape-properties" style="display: none;">
+                            <div class="color-picker">
+                                <label for="shape-fill">Fill:</label>
+                                <input type="color" id="shape-fill" value="#ffffff">
+                            </div>
+                            <div class="color-picker">
+                                <label for="shape-stroke">Stroke:</label>
+                                <input type="color" id="shape-stroke" value="#000000">
+                            </div>
+                            <label for="shape-stroke-width">Stroke Width:</label>
+                            <input type="number" id="shape-stroke-width" min="1" max="10" value="1">
+                        </div>
+                        
+                        <div id="image-properties" style="display: none;">
+                            <label for="image-opacity">Opacity:</label>
+                            <input type="range" id="image-opacity" min="0" max="100" value="100">
+                        </div>
+                        
+                        <div id="highlight-properties" style="display: none;">
+                            <div class="color-picker">
+                                <label for="highlight-color">Color:</label>
+                                <input type="color" id="highlight-color" value="#ffff00">
+                            </div>
+                            <label for="highlight-opacity">Opacity:</label>
+                            <input type="range" id="highlight-opacity" min="0" max="100" value="50">
+                        </div>
+                        
+                        <div id="comment-properties" style="display: none;">
+                            <label for="comment-text">Comment:</label>
+                            <textarea id="comment-text" rows="3"></textarea>
+                            <div class="color-picker">
+                                <label for="comment-color">Color:</label>
+                                <input type="color" id="comment-color" value="#ffeb3b">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Images</h3>
+                    <div class="thumbnail-container" id="image-thumbnails"></div>
+                </div>
+            </div>
+            
+            <div class="pdf-container">
+                <div class="page-controls">
+                    <button id="prev-page">Previous</button>
+                    <span id="page-number">Page 1 of 1</span>
+                    <button id="next-page">Next</button>
+                </div>
+                
+                <div class="canvas-container" id="canvas-container">
+                    <canvas id="pdf-canvas"></canvas>
+                    <div class="zoom-controls">
+                        <button id="zoom-in-btn-bottom">+</button>
+                        <button id="zoom-out-btn-bottom">-</button>
+                        <button id="zoom-reset-btn">100%</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Main variables
+        let pdfDoc = null;
+        let currentPage = 1;
+        let pageCount = 0;
+        let canvas, ctx;
+        let scale = 1.0;
+        let fabricCanvas;
+        let activeTool = null;
+        let uploadedImages = [];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            canvas = document.getElementById('pdf-canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Initialize Fabric.js canvas
+            fabricCanvas = new fabric.Canvas('pdf-canvas', {
+                selection: false,
+                preserveObjectStacking: true
+            });
+            
+            // Set canvas size
+            updateCanvasSize();
+            
+            // Event listeners for buttons
+            document.getElementById('upload-btn').addEventListener('click', function() {
+                document.getElementById('pdf-upload').click();
+            });
+            
+            document.getElementById('pdf-upload').addEventListener('change', loadPDF);
+            document.getElementById('save-btn').addEventListener('click', savePDF);
+            
+            // Tool buttons
+            document.getElementById('text-btn').addEventListener('click', setTextTool);
+            document.getElementById('image-btn').addEventListener('click', setImageTool);
+            document.getElementById('rectangle-btn').addEventListener('click', setRectangleTool);
+            document.getElementById('circle-btn').addEventListener('click', setCircleTool);
+            document.getElementById('line-btn').addEventListener('click', setLineTool);
+            document.getElementById('highlight-btn').addEventListener('click', setHighlightTool);
+            document.getElementById('comment-btn').addEventListener('click', setCommentTool);
+            document.getElementById('delete-btn').addEventListener('click', setDeleteTool);
+            
+            // Zoom buttons
+            document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
+            document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+            document.getElementById('zoom-fit-btn').addEventListener('click', zoomFit);
+            document.getElementById('zoom-in-btn-bottom').addEventListener('click', zoomIn);
+            document.getElementById('zoom-out-btn-bottom').addEventListener('click', zoomOut);
+            document.getElementById('zoom-reset-btn').addEventListener('click', zoomReset);
+            
+            // Page navigation
+            document.getElementById('prev-page').addEventListener('click', prevPage);
+            document.getElementById('next-page').addEventListener('click', nextPage);
+            
+            // Image upload
+            document.getElementById('image-upload').addEventListener('change', handleImageUpload);
+            
+            // Window resize
+            window.addEventListener('resize', function() {
+                updateCanvasSize();
+                renderPage();
+            });
+            
+            // Fabric canvas events
+            fabricCanvas.on('object:selected', function(e) {
+                showPropertiesForObject(e.target);
+            });
+            
+            fabricCanvas.on('selection:cleared', function() {
+                hideAllProperties();
+            });
+            
+            fabricCanvas.on('mouse:down', function(options) {
+                if (activeTool === 'text') {
+                    addText(options.e);
+                } else if (activeTool === 'image' && uploadedImages.length > 0) {
+                    addImage(options.e);
+                } else if (activeTool === 'rectangle') {
+                    startDrawingRectangle(options.e);
+                } else if (activeTool === 'circle') {
+                    startDrawingCircle(options.e);
+                } else if (activeTool === 'line') {
+                    startDrawingLine(options.e);
+                } else if (activeTool === 'highlight') {
+                    startDrawingHighlight(options.e);
+                } else if (activeTool === 'comment') {
+                    addComment(options.e);
+                } else if (activeTool === 'delete') {
+                    deleteObject(options.e);
+                }
+            });
+            
+            // Property change listeners
+            document.getElementById('text-content').addEventListener('input', updateSelectedText);
+            document.getElementById('text-font').addEventListener('change', updateSelectedText);
+            document.getElementById('text-size').addEventListener('input', updateSelectedText);
+            document.getElementById('text-color').addEventListener('input', updateSelectedText);
+            
+            document.getElementById('shape-fill').addEventListener('input', updateSelectedShape);
+            document.getElementById('shape-stroke').addEventListener('input', updateSelectedShape);
+            document.getElementById('shape-stroke-width').addEventListener('input', updateSelectedShape);
+            
+            document.getElementById('image-opacity').addEventListener('input', updateSelectedImage);
+            
+            document.getElementById('highlight-color').addEventListener('input', updateSelectedHighlight);
+            document.getElementById('highlight-opacity').addEventListener('input', updateSelectedHighlight);
+            
+            document.getElementById('comment-text').addEventListener('input', updateSelectedComment);
+            document.getElementById('comment-color').addEventListener('input', updateSelectedComment);
+        });
+        
+        // PDF functions
+        function loadPDF(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const typedArray = new Uint8Array(e.target.result);
+                    pdfDoc = await PDFLib.PDFDocument.load(typedArray);
+                    pageCount = pdfDoc.getPageCount();
+                    currentPage = 1;
+                    
+                    updatePageNumber();
+                    renderPage();
+                    generateThumbnails();
+                } catch (error) {
+                    console.error('Error loading PDF:', error);
+                    alert('Error loading PDF. Please try another file.');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        async function renderPage() {
+            if (!pdfDoc) return;
+            
+            try {
+                const page = await pdfDoc.getPage(currentPage - 1);
+                const viewport = page.getViewport({ scale: scale });
+                
+                // Set canvas dimensions
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                
+                // Render PDF page
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                await page.render(renderContext).promise;
+                
+                // Update Fabric.js canvas size
+                fabricCanvas.setWidth(viewport.width);
+                fabricCanvas.setHeight(viewport.height);
+                fabricCanvas.renderAll();
+            } catch (error) {
+                console.error('Error rendering page:', error);
+            }
+        }
+        
+        async function savePDF() {
+            if (!pdfDoc) {
+                alert('No PDF loaded.');
+                return;
+            }
+            
+            try {
+                // Create a new PDF to save our edits
+                const newPdf = await PDFLib.PDFDocument.create();
+                
+                // Copy all pages from the original PDF
+                const pages = await newPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+                for (const page of pages) {
+                    newPdf.addPage(page);
+                }
+                
+                // Save the modified PDF
+                const pdfBytes = await newPdf.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                saveAs(blob, 'edited_pdf.pdf');
+            } catch (error) {
+                console.error('Error saving PDF:', error);
+                alert('Error saving PDF. Please try again.');
+            }
+        }
+        
+        // Page navigation
+        function prevPage() {
+            if (currentPage <= 1) return;
+            currentPage--;
+            updatePageNumber();
+            renderPage();
+        }
+        
+        function nextPage() {
+            if (currentPage >= pageCount) return;
+            currentPage++;
+            updatePageNumber();
+            renderPage();
+        }
+        
+        function updatePageNumber() {
+            document.getElementById('page-number').textContent = `Page ${currentPage} of ${pageCount}`;
+        }
+        
+        // Thumbnail generation
+        async function generateThumbnails() {
+            const container = document.getElementById('page-thumbnails');
+            container.innerHTML = '';
+            
+            if (!pdfDoc) return;
+            
+            for (let i = 0; i < pageCount; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale: 0.2 });
+                
+                const thumbnailCanvas = document.createElement('canvas');
+                thumbnailCanvas.width = viewport.width;
+                thumbnailCanvas.height = viewport.height;
+                
+                const thumbnailCtx = thumbnailCanvas.getContext('2d');
+                await page.render({
+                    canvasContext: thumbnailCtx,
+                    viewport: viewport
+                }).promise;
+                
+                const thumbnail = document.createElement('img');
+                thumbnail.src = thumbnailCanvas.toDataURL();
+                thumbnail.className = 'thumbnail';
+                if (i + 1 === currentPage) {
+                    thumbnail.classList.add('active');
+                }
+                
+                thumbnail.addEventListener('click', function() {
+                    currentPage = i + 1;
+                    updatePageNumber();
+                    renderPage();
+                    
+                    // Update active thumbnail
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                
+                container.appendChild(thumbnail);
+            }
+        }
+        
+        // Canvas functions
+        function updateCanvasSize() {
+            const container = document.getElementById('canvas-container');
+            const width = container.clientWidth - 40;
+            const height = container.clientHeight - 40;
+            
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            
+            if (fabricCanvas) {
+                fabricCanvas.setWidth(width);
+                fabricCanvas.setHeight(height);
+            }
+        }
+        
+        // Zoom functions
+        function zoomIn() {
+            scale += 0.1;
+            renderPage();
+        }
+        
+        function zoomOut() {
+            if (scale <= 0.2) return;
+            scale -= 0.1;
+            renderPage();
+        }
+        
+        function zoomFit() {
+            const container = document.getElementById('canvas-container');
+            if (!pdfDoc || !container) return;
+            
+            pdfDoc.getPage(currentPage - 1).then(function(page) {
+                const viewport = page.getViewport({ scale: 1.0 });
+                const containerWidth = container.clientWidth - 40;
+                const containerHeight = container.clientHeight - 40;
+                
+                const widthScale = containerWidth / viewport.width;
+                const heightScale = containerHeight / viewport.height;
+                
+                scale = Math.min(widthScale, heightScale);
+                renderPage();
+            });
+        }
+        
+        function zoomReset() {
+            scale = 1.0;
+            renderPage();
+        }
+        
+        // Tool functions
+        function setTextTool() {
+            resetActiveTool();
+            activeTool = 'text';
+            document.getElementById('text-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'text';
+        }
+        
+        function setImageTool() {
+            resetActiveTool();
+            activeTool = 'image';
+            document.getElementById('image-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'crosshair';
+            
+            if (uploadedImages.length === 0) {
+                document.getElementById('image-upload').click();
+            }
+        }
+        
+        function setRectangleTool() {
+            resetActiveTool();
+            activeTool = 'rectangle';
+            document.getElementById('rectangle-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'crosshair';
+        }
+        
+        function setCircleTool() {
+            resetActiveTool();
+            activeTool = 'circle';
+            document.getElementById('circle-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'crosshair';
+        }
+        
+        function setLineTool() {
+            resetActiveTool();
+            activeTool = 'line';
+            document.getElementById('line-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'crosshair';
+        }
+        
+        function setHighlightTool() {
+            resetActiveTool();
+            activeTool = 'highlight';
+            document.getElementById('highlight-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'crosshair';
+        }
+        
+        function setCommentTool() {
+            resetActiveTool();
+            activeTool = 'comment';
+            document.getElementById('comment-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'crosshair';
+        }
+        
+        function setDeleteTool() {
+            resetActiveTool();
+            activeTool = 'delete';
+            document.getElementById('delete-btn').classList.add('active');
+            fabricCanvas.defaultCursor = 'not-allowed';
+        }
+        
+        function resetActiveTool() {
+            activeTool = null;
+            document.querySelectorAll('.toolbar button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            fabricCanvas.defaultCursor = 'default';
+        }
+        
+        // Image handling
+        function handleImageUpload(e) {
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+            
+            const container = document.getElementById('image-thumbnails');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    
+                    img.onload = function() {
+                        uploadedImages.push({
+                            src: event.target.result,
+                            element: img
+                        });
+                        
+                        const thumb = document.createElement('img');
+                        thumb.src = event.target.result;
+                        thumb.title = file.name;
+                        thumb.addEventListener('click', function() {
+                            // Set this image as the active image for placement
+                            // You could highlight the selected thumbnail here
+                        });
+                        
+                        container.appendChild(thumb);
+                    };
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Drawing functions
+        function addText(e) {
+            const pointer = fabricCanvas.getPointer(e);
+            
+            const text = new fabric.IText('Double click to edit', {
+                left: pointer.x,
+                top: pointer.y,
+                fontFamily: 'Arial',
+                fontSize: 16,
+                fill: '#000000',
+                editable: true
+            });
+            
+            fabricCanvas.add(text);
+            fabricCanvas.setActiveObject(text);
+            text.enterEditing();
+            text.selectAll();
+            
+            showPropertiesForObject(text);
+        }
+        
+        function addImage(e) {
+            if (uploadedImages.length === 0) return;
+            
+            // For simplicity, we'll use the first uploaded image
+            const imgSrc = uploadedImages[0].src;
+            
+            fabric.Image.fromURL(imgSrc, function(img) {
+                const pointer = fabricCanvas.getPointer(e);
+                img.set({
+                    left: pointer.x,
+                    top: pointer.y,
+                    scaleX: 0.5,
+                    scaleY: 0.5,
+                    selectable: true
+                });
+                
+                fabricCanvas.add(img);
+                fabricCanvas.setActiveObject(img);
+                showPropertiesForObject(img);
+            });
+        }
+        
+        let isDrawing = false;
+        let startX, startY;
+        let currentShape = null;
+        
+        function startDrawingRectangle(e) {
+            isDrawing = true;
+            const pointer = fabricCanvas.getPointer(e);
+            startX = pointer.x;
+            startY = pointer.y;
+            
+            currentShape = new fabric.Rect({
+                left: startX,
+                top: startY,
+                width: 0,
+                height: 0,
+                fill: 'rgba(255, 255, 255, 0)',
+                stroke: '#000000',
+                strokeWidth: 1,
+                selectable: true
+            });
+            
+            fabricCanvas.add(currentShape);
+            
+            fabricCanvas.on('mouse:move', function(o) {
+                if (!isDrawing) return;
+                const pointer = fabricCanvas.getPointer(o.e);
+                
+                currentShape.set({
+                    width: pointer.x - startX,
+                    height: pointer.y - startY
+                });
+                
+                fabricCanvas.renderAll();
+            });
+            
+            fabricCanvas.on('mouse:up', function() {
+                isDrawing = false;
+                fabricCanvas.off('mouse:move');
+                fabricCanvas.off('mouse:up');
+                
+                if (currentShape.width === 0 && currentShape.height === 0) {
+                    fabricCanvas.remove(currentShape);
+                } else {
+                    fabricCanvas.setActiveObject(currentShape);
+                    showPropertiesForObject(currentShape);
+                }
+                
+                currentShape = null;
+            });
+        }
+        
+        function startDrawingCircle(e) {
+            isDrawing = true;
+            const pointer = fabricCanvas.getPointer(e);
+            startX = pointer.x;
+            startY = pointer.y;
+            
+            currentShape = new fabric.Circle({
+                left: startX,
+                top: startY,
+                radius: 0,
+                fill: 'rgba(255, 255, 255, 0)',
+                stroke: '#000000',
+                strokeWidth: 1,
+                selectable: true
+            });
+            
+            fabricCanvas.add(currentShape);
+            
+            fabricCanvas.on('mouse:move', function(o) {
+                if (!isDrawing) return;
+                const pointer = fabricCanvas.getPointer(o.e);
+                
+                const radius = Math.sqrt(
+                    Math.pow(pointer.x - startX, 2) + 
+                    Math.pow(pointer.y - startY, 2)
+                ) / 2;
+                
+                currentShape.set({
+                    radius: radius,
+                    left: startX - radius,
+                    top: startY - radius
+                });
+                
+                fabricCanvas.renderAll();
+            });
+            
+            fabricCanvas.on('mouse:up', function() {
+                isDrawing = false;
+                fabricCanvas.off('mouse:move');
+                fabricCanvas.off('mouse:up');
+                
+                if (currentShape.radius === 0) {
+                    fabricCanvas.remove(currentShape);
+                } else {
+                    fabricCanvas.setActiveObject(currentShape);
+                    showPropertiesForObject(currentShape);
+                }
+                
+                currentShape = null;
+            });
+        }
+        
+        function startDrawingLine(e) {
+            isDrawing = true;
+            const pointer = fabricCanvas.getPointer(e);
+            startX = pointer.x;
+            startY = pointer.y;
+            
+            currentShape = new fabric.Line([startX, startY, startX, startY], {
+                stroke: '#000000',
+                strokeWidth: 1,
+                selectable: true
+            });
+            
+            fabricCanvas.add(currentShape);
+            
+            fabricCanvas.on('mouse:move', function(o) {
+                if (!isDrawing) return;
+                const pointer = fabricCanvas.getPointer(o.e);
+                
+                currentShape.set({
+                    x2: pointer.x,
+                    y2: pointer.y
+                });
+                
+                fabricCanvas.renderAll();
+            });
+            
+            fabricCanvas.on('mouse:up', function() {
+                isDrawing = false;
+                fabricCanvas.off('mouse:move');
+                fabricCanvas.off('mouse:up');
+                
+                if (currentShape.x1 === currentShape.x2 && currentShape.y1 === currentShape.y2) {
+                    fabricCanvas.remove(currentShape);
+                } else {
+                    fabricCanvas.setActiveObject(currentShape);
+                    showPropertiesForObject(currentShape);
+                }
+                
+                currentShape = null;
+            });
+        }
+        
+        function startDrawingHighlight(e) {
+            isDrawing = true;
+            const pointer = fabricCanvas.getPointer(e);
+            startX = pointer.x;
+            startY = pointer.y;
+            
+            currentShape = new fabric.Rect({
+                left: startX,
+                top: startY,
+                width: 0,
+                height: 0,
+                fill: 'rgba(255, 255, 0, 0.5)',
+                stroke: 'rgba(255, 255, 0, 0.7)',
+                strokeWidth: 1,
+                selectable: true
+            });
+            
+            fabricCanvas.add(currentShape);
+            
+            fabricCanvas.on('mouse:move', function(o) {
+                if (!isDrawing) return;
+                const pointer = fabricCanvas.getPointer(o.e);
+                
+                currentShape.set({
+                    width: pointer.x - startX,
+                    height: pointer.y - startY
+                });
+                
+                fabricCanvas.renderAll();
+            });
+            
+            fabricCanvas.on('mouse:up', function() {
+                isDrawing = false;
+                fabricCanvas.off('mouse:move');
+                fabricCanvas.off('mouse:up');
+                
+                if (currentShape.width === 0 && currentShape.height === 0) {
+                    fabricCanvas.remove(currentShape);
+                } else {
+                    fabricCanvas.setActiveObject(currentShape);
+                    showPropertiesForObject(currentShape);
+                }
+                
+                currentShape = null;
+            });
+        }
+        
+        function addComment(e) {
+            const pointer = fabricCanvas.getPointer(e);
+            
+            const comment = new fabric.Rect({
+                left: pointer.x,
+                top: pointer.y,
+                width: 30,
+                height: 30,
+                fill: 'rgba(255, 235, 59, 0.7)',
+                stroke: 'rgba(255, 235, 59, 1)',
+                strokeWidth: 1,
+                selectable: true,
+                hasControls: false,
+                lockRotation: true,
+                lockScalingX: true,
+                lockScalingY: true,
+                originX: 'center',
+                originY: 'center'
+            });
+            
+            const text = new fabric.Text('!', {
+                fontSize: 20,
+                fill: '#000000',
+                originX: 'center',
+                originY: 'center',
+                selectable: false
+            });
+            
+            const group = new fabric.Group([comment, text], {
+                left: pointer.x,
+                top: pointer.y,
+                selectable: true,
+                hasControls: true
+            });
+            
+            fabricCanvas.add(group);
+            fabricCanvas.setActiveObject(group);
+            
+            // Add comment text as a property
+            group.commentText = 'Enter your comment here';
+            showPropertiesForObject(group);
+        }
+        
+        function deleteObject(e) {
+            const pointer = fabricCanvas.getPointer(e);
+            const target = fabricCanvas.findTarget(pointer);
+            
+            if (target) {
+                fabricCanvas.remove(target);
+                fabricCanvas.renderAll();
+            }
+        }
+        
+        // Property panel functions
+        function showPropertiesForObject(obj) {
+            hideAllProperties();
+            
+            if (obj instanceof fabric.IText || obj instanceof fabric.Text) {
+                document.getElementById('text-properties').style.display = 'block';
+                
+                document.getElementById('text-content').value = obj.text;
+                document.getElementById('text-font').value = obj.fontFamily;
+                document.getElementById('text-size').value = obj.fontSize;
+                document.getElementById('text-color').value = rgbToHex(obj.fill);
+            } 
+            else if (obj instanceof fabric.Rect || obj instanceof fabric.Circle || obj instanceof fabric.Line) {
+                document.getElementById('shape-properties').style.display = 'block';
+                
+                document.getElementById('shape-fill').value = rgbToHex(obj.fill);
+                document.getElementById('shape-stroke').value = rgbToHex(obj.stroke);
+                document.getElementById('shape-stroke-width').value = obj.strokeWidth;
+            } 
+            else if (obj instanceof fabric.Image) {
+                document.getElementById('image-properties').style.display = 'block';
+                
+                document.getElementById('image-opacity').value = obj.opacity * 100;
+            } 
+            else if (obj instanceof fabric.Group && obj.commentText !== undefined) {
+                document.getElementById('comment-properties').style.display = 'block';
+                
+                document.getElementById('comment-text').value = obj.commentText;
+                const rect = obj.item(0);
+                document.getElementById('comment-color').value = rgbToHex(rect.fill);
+            }
+        }
+        
+        function hideAllProperties() {
+            document.querySelectorAll('.properties-panel > div').forEach(panel => {
+                panel.style.display = 'none';
+            });
+        }
+        
+        function updateSelectedText() {
+            const activeObject = fabricCanvas.getActiveObject();
+            if (!activeObject || !(activeObject instanceof fabric.IText || activeObject instanceof fabric.Text)) return;
+            
+            activeObject.set({
+                text: document.getElementById('text-content').value,
+                fontFamily: document.getElementById('text-font').value,
+                fontSize: parseInt(document.getElementById('text-size').value),
+                fill: document.getElementById('text-color').value
+            });
+            
+            fabricCanvas.renderAll();
+        }
+        
+        function updateSelectedShape() {
+            const activeObject = fabricCanvas.getActiveObject();
+            if (!activeObject || !(activeObject instanceof fabric.Rect || activeObject instanceof fabric.Circle || activeObject instanceof fabric.Line)) return;
+            
+            activeObject.set({
+                fill: document.getElementById('shape-fill').value,
+                stroke: document.getElementById('shape-stroke').value,
+                strokeWidth: parseInt(document.getElementById('shape-stroke-width').value)
+            });
+            
+            fabricCanvas.renderAll();
+        }
+        
+        function updateSelectedImage() {
+            const activeObject = fabricCanvas.getActiveObject();
+            if (!activeObject || !(activeObject instanceof fabric.Image)) return;
+            
+            activeObject.set({
+                opacity: parseInt(document.getElementById('image-opacity').value) / 100
+            });
+            
+            fabricCanvas.renderAll();
+        }
+        
+        function updateSelectedHighlight() {
+            const activeObject = fabricCanvas.getActiveObject();
+            if (!activeObject || !(activeObject instanceof fabric.Rect)) return;
+            
+            const color = document.getElementById('highlight-color').value;
+            const opacity = parseInt(document.getElementById('highlight-opacity').value) / 100;
+            
+            const rgbaColor = hexToRgba(color, opacity);
+            
+            activeObject.set({
+                fill: rgbaColor,
+                stroke: hexToRgba(color, opacity + 0.2)
+            });
+            
+            fabricCanvas.renderAll();
+        }
+        
+        function updateSelectedComment() {
+            const activeObject = fabricCanvas.getActiveObject();
+            if (!activeObject || !(activeObject instanceof fabric.Group) || activeObject.commentText === undefined) return;
+            
+            activeObject.commentText = document.getElementById('comment-text').value;
+            
+            const color = document.getElementById('comment-color').value;
+            const rect = activeObject.item(0);
+            
+            rect.set({
+                fill: hexToRgba(color, 0.7),
+                stroke: hexToRgba(color, 1)
+            });
+            
+            fabricCanvas.renderAll();
+        }
+        
+        // Helper functions
+        function rgbToHex(rgb) {
+            if (!rgb) return '#000000';
+            
+            if (rgb.startsWith('#')) return rgb;
+            
+            if (rgb.startsWith('rgba')) {
+                rgb = rgb.replace('rgba(', '').replace(')', '');
+            } else if (rgb.startsWith('rgb')) {
+                rgb = rgb.replace('rgb(', '').replace(')', '');
+            }
+            
+            const parts = rgb.split(',');
+            const r = parseInt(parts[0].trim());
+            const g = parseInt(parts[1].trim());
+            const b = parseInt(parts[2].trim());
+            
+            return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+        
+        function hexToRgba(hex, alpha = 1) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+    </script>
+</body>
+</html>

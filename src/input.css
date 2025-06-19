@@ -9,24 +9,7 @@
     font-family: 'Poppins', sans-serif;
   }
 
-  /* Color Utilities */
-  .bg-primary-light { background-color: #4f46e5; }
-  .bg-primary-dark { background-color: #7c3aed; }
 
-  .bg-secondary-light { background-color: #10b981; }
-  .bg-secondary-dark { background-color: #34d399; }
-
-  .bg-dark-800 { background-color: #1e293b; }
-  .bg-dark-900 { background-color: #0f172a; }
-
-  .text-primary-light { color: #4f46e5; }
-  .text-primary-dark { color: #7c3aed; }
-
-  .text-secondary-light { color: #10b981; }
-  .text-secondary-dark { color: #34d399; }
-
-  .text-dark-800 { color: #1e293b; }
-  .text-dark-900 { color: #0f172a; }
 
   /* Animations */
   .animate-gradient-x {

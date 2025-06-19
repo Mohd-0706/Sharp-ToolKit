@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Password Protector</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input[type="file"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        input[type="file"] {
+            padding: 8px;
+        }
+        input[type="password"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+        }
+        .success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+            border-left: 4px solid #2e7d32;
+        }
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            display: block;
+            border-left: 4px solid #c62828;
+        }
+        #downloadBtn {
+            background-color: #27ae60;
+            display: none;
+        }
+        #downloadBtn:hover {
+            background-color: #219653;
+        }
+        .password-match {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .password-mismatch {
+            color: #c62828;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .file-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Password Protector</h1>
+        
+        <div class="form-group">
+            <label for="pdfFile">Select PDF file:</label>
+            <input type="file" id="pdfFile" accept=".pdf" required>
+            <div id="fileInfo" class="file-info"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Enter password:</label>
+            <input type="password" id="password" required placeholder="Set a password for the PDF">
+        </div>
+        
+        <div class="form-group">
+            <label for="confirmPassword">Confirm password:</label>
+            <input type="password" id="confirmPassword" required placeholder="Re-enter the password">
+            <div id="passwordMatch" class="password-match">✓ Passwords match</div>
+            <div id="passwordMismatch" class="password-mismatch">✗ Passwords do not match</div>
+        </div>
+        
+        <button id="protectBtn">Protect PDF</button>
+        <button id="downloadBtn">Download Protected PDF</button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfFileInput = document.getElementById('pdfFile');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const protectBtn = document.getElementById('protectBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const statusDiv = document.getElementById('status');
+            const passwordMatch = document.getElementById('passwordMatch');
+            const passwordMismatch = document.getElementById('passwordMismatch');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            let protectedPdfBytes = null;
+            let passwordsMatch = false;
+            
+            // Event listeners
+            protectBtn.addEventListener('click', protectPdf);
+            downloadBtn.addEventListener('click', downloadPdf);
+            pdfFileInput.addEventListener('change', updateFileInfo);
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            passwordInput.addEventListener('input', checkPasswordMatch);
+            
+            function updateFileInfo() {
+                if (pdfFileInput.files.length > 0) {
+                    const file = pdfFileInput.files[0];
+                    fileInfo.textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
+                } else {
+                    fileInfo.textContent = '';
+                }
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            function checkPasswordMatch() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (password && confirmPassword) {
+                    if (password === confirmPassword) {
+                        passwordsMatch = true;
+                        passwordMatch.style.display = 'block';
+                        passwordMismatch.style.display = 'none';
+                    } else {
+                        passwordsMatch = false;
+                        passwordMatch.style.display = 'none';
+                        passwordMismatch.style.display = 'block';
+                    }
+                } else {
+                    passwordsMatch = false;
+                    passwordMatch.style.display = 'none';
+                    passwordMismatch.style.display = 'none';
+                }
+            }
+            
+            async function protectPdf() {
+                const file = pdfFileInput.files[0];
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                // Validate inputs
+                if (!file) {
+                    showStatus('Please select a PDF file.', 'error');
+                    return;
+                }
+                
+                if (!password || !confirmPassword) {
+                    showStatus('Please enter and confirm your password.', 'error');
+                    return;
+                }
+                
+                if (!passwordsMatch) {
+                    showStatus('Passwords do not match. Please check and try again.', 'error');
+                    return;
+                }
+                
+                try {
+                    protectBtn.disabled = true;
+                    showStatus('Applying password protection to your PDF...', 'success');
+                    
+                    // Read the uploaded file
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Load the PDF document
+                    const { PDFDocument } = PDFLib;
+                    const pdfDoc = await PDFDocument.load(arrayBuffer);
+                    
+                    // Set the password protection
+                    await pdfDoc.encrypt({
+                        userPassword: password,
+                        ownerPassword: password,
+                        userPermissions: {
+                            printing: 'allowAll',
+                            copying: 'allow',
+                            modifying: 'deny',
+                            annotating: 'deny',
+                            fillingForms: 'deny',
+                            contentAccessibility: 'deny',
+                            documentAssembly: 'deny'
+                        }
+                    });
+                    
+                    // Save the protected PDF
+                    protectedPdfBytes = await pdfDoc.save();
+                    
+                    showStatus('PDF protected successfully! Click "Download Protected PDF" to save your file.', 'success');
+                    downloadBtn.style.display = 'block';
+                    protectBtn.disabled = false;
+                } catch (error) {
+                    console.error('Error:', error);
+                    showStatus('Error processing PDF: ' + error.message, 'error');
+                    protectBtn.disabled = false;
+                }
+            }
+            
+            function downloadPdf() {
+                if (!protectedPdfBytes) {
+                    showStatus('No protected PDF available.', 'error');
+                    return;
+                }
+                
+                const fileName = pdfFileInput.files[0].name.replace('.pdf', '') || 'protected';
+                download(new Blob([protectedPdfBytes], { type: 'application/pdf' }), `${fileName}_protected.pdf`, 'application/pdf');
+            }
+            
+            function showStatus(message, type) {
+                statusDiv.textContent = message;
+                statusDiv.className = type;
+            }
+        });
+    </script>
+</body>
+</html>

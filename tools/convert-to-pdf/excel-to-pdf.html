@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to PDF Converter | PDF Tools Pro</title>
+    
+    <!-- Preload resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            light: '#4f46e5',
+                            dark: '#7c3aed',
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#34d399',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 8s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-reverse': 'float-reverse 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        'float-reverse': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom styles for drag and drop */
+        .progress-bar-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+
+        /* Table styles */
+        .preview-table th {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+        .dark .preview-table th {
+            background-color: rgba(124, 58, 237, 0.1);
+            color: #7c3aed;
+        }
+        .preview-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .dark .preview-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-900 dark:to-dark-800 text-gray-800 dark:text-gray-200 min-h-screen">
+    <!-- Header -->
+    <header class="site-header fixed w-full z-40 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/pages/index.html" class="flex items-center">
+                <i class="fas fa-file-excel text-primary-light dark:text-primary-dark text-2xl mr-2"></i>
+                <div class="text-xl font-bold">
+                    <span class="text-primary-light dark:text-primary-dark">Excel</span> to PDF
+                </div>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="/pages/index.html" class="nav-link relative group font-medium">
+                    Home
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/pages/popular-tools.html" class="nav-link relative group font-medium">
+                    Popular Tools
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/pages/all-tools.html" class="nav-link relative group font-medium">
+                    All Tools
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/pages/how-it-works.html" class="nav-link relative group font-medium">
+                    How It Works
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-light dark:bg-primary-dark transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </nav>
+
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <span class="dark:hidden">
+                    <i class="fas fa-moon text-gray-700"></i>
+                </span>
+                <span class="hidden dark:inline">
+                    <i class="fas fa-sun text-yellow-300"></i>
+                </span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content pt-20 pb-16">
+        <div class="container mx-auto px-4 sm:px-6 py-8">
+            <!-- Hero Section -->
+            <section class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark bg-clip-text text-transparent">
+                    Excel to PDF Converter
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    Convert your Excel files to PDF documents with ease. Just upload your file and get a professional PDF.
+                </p>
+            </section>
+            
+            <!-- Upload Section -->
+            <section class="max-w-3xl mx-auto mb-8">
+                <div id="uploadBox" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 hover:border-primary-light dark:hover:border-primary-dark hover:bg-primary-light/5 dark:hover:bg-primary-dark/5 hover:shadow-lg"
+                    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                    <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden" />
+                    <div class="flex flex-col items-center justify-center">
+                        <i class="fas fa-file-excel text-5xl text-primary-light dark:text-primary-dark mb-4 animate-float"></i>
+                        <h3 class="text-xl font-semibold mb-2">Upload Excel File</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Click to browse or drag & drop your Excel file here</p>
+                    </div>
+                    <div id="progressContainer" class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 hidden">
+                        <div id="progressBar" class="bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark h-2 rounded-full relative overflow-hidden" style="width: 0%">
+                            <div class="progress-bar-shine"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="statusMessage" class="mt-4 p-4 rounded-lg bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark border-l-4 border-primary-light dark:border-primary-dark hidden"></div>
+            </section>
+            
+            <!-- Preview Section -->
+            <section id="previewSection" class="max-w-3xl mx-auto bg-white dark:bg-dark-800 rounded-xl shadow-lg p-6 mb-8 hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-semibold text-primary-light dark:text-primary-dark">Excel Data Preview</h2>
+                    <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+                        <button id="resetBtn" class="px-4 py-2 border-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark rounded-full font-medium flex items-center hover:bg-primary-light/10 dark:hover:bg-primary-dark/10 transition-all duration-300 w-full sm:w-auto justify-center">
+                            <i class="fas fa-redo mr-2"></i> Reset
+                        </button>
+                        <button id="convertBtn" class="px-4 py-2 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-white rounded-full font-medium flex items-center hover:shadow-lg transition-all duration-300 hover:from-primary-light/90 hover:to-secondary-light/90 dark:hover:from-primary-dark/90 dark:hover:to-secondary-dark/90 w-full sm:w-auto justify-center" disabled>
+                            <i class="fas fa-file-pdf mr-2"></i> Convert to PDF
+                        </button>
+                        <button id="downloadBtn" class="px-4 py-2 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-white rounded-full font-medium flex items-center hover:shadow-lg transition-all duration-300 hover:from-primary-light/90 hover:to-secondary-light/90 dark:hover:from-primary-dark/90 dark:hover:to-secondary-dark/90 w-full sm:w-auto justify-center" disabled>
+                            <i class="fas fa-download mr-2"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="loadingSpinner" class="w-12 h-12 border-4 border-primary-light/30 dark:border-primary-dark/30 border-t-primary-light dark:border-t-primary-dark border-r-primary-light dark:border-r-primary-dark rounded-full animate-spin mx-auto my-8 hidden"></div>
+                
+                <div class="preview-table-container overflow-x-auto">
+                    <table class="preview-table w-full border-collapse border border-gray-200 dark:border-gray-600">
+                        <thead id="previewTableHead"></thead>
+                        <tbody id="previewTableBody"></tbody>
+                        <tfoot id="previewTableFoot"></tfoot>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-primary-light dark:bg-primary-dark text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible hover:bg-primary-light/90 dark:hover:bg-primary-dark/90">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Back to Home -->
+    <a href="/pages/index.html" class="fixed bottom-6 left-6 w-12 h-12 bg-primary-light dark:bg-primary-dark text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:bg-primary-light/90 dark:hover:bg-primary-dark/90">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- Particles Background -->
+    <div id="particles-js" class="fixed inset-0 -z-50 opacity-20 dark:opacity-10"></div>
+
+    <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const uploadBox = document.getElementById('uploadBox');
+        const previewSection = document.getElementById('previewSection');
+        const previewTableHead = document.getElementById('previewTableHead');
+        const previewTableBody = document.getElementById('previewTableBody');
+        const previewTableFoot = document.getElementById('previewTableFoot');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const statusMessage = document.getElementById('statusMessage');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const themeToggle = document.getElementById('theme-toggle');
+        const backToTop = document.getElementById('backToTop');
+        
+        // State variables
+        let workbook = null;
+        let selectedSheet = null;
+        let excelData = [];
+        let pdfDoc = null;
+        
+        // Event Listeners
+        uploadBox.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+        convertBtn.addEventListener('click', convertToPDF);
+        downloadBtn.addEventListener('click', downloadPDF);
+        resetBtn.addEventListener('click', resetConverter);
+        themeToggle.addEventListener('click', toggleTheme);
+        window.addEventListener('scroll', handleBackToTop);
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            themeToggle.querySelector('.dark\\:hidden').classList.add('hidden');
+            themeToggle.querySelector('.dark\\:inline').classList.remove('hidden');
+        }
+        
+        // Functions
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processExcelFile(file);
+            }
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadBox.classList.add('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/5', 'dark:bg-primary-dark/5');
+        }
+        
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadBox.classList.remove('border-primary-light', 'dark:border-primary-dark', 'bg-primary-light/5', 'dark:bg-primary-dark/5');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleDragLeave(e);
+            
+            const file = e.dataTransfer.files[0];
+            if (file && (file.name.match(/\.(xlsx|xls)$/i))) {
+                processExcelFile(file);
+            } else {
+                showStatusMessage('Please upload a valid Excel file (.xlsx or .xls)', 'error');
+            }
+        }
+        
+        async function processExcelFile(file) {
+            // Validate file
+            if (!file.name.match(/\.(xlsx|xls)$/i)) {
+                showStatusMessage('Please upload a valid Excel file (.xlsx or .xls)', 'error');
+                return;
+            }
+            
+            // Check file size (limit to 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showStatusMessage('File size exceeds 10MB limit', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                loadingSpinner.classList.remove('hidden');
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '0%';
+                previewSection.classList.add('hidden');
+                previewTableHead.innerHTML = '';
+                previewTableBody.innerHTML = '';
+                previewTableFoot.innerHTML = '';
+                workbook = null;
+                excelData = [];
+                pdfDoc = null;
+                convertBtn.disabled = true;
+                downloadBtn.disabled = true;
+                
+                // Read file as array buffer
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        
+                        // Update progress
+                        updateProgress(30);
+                        
+                        // Parse Excel file
+                        workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Update progress
+                        updateProgress(60);
+                        
+                        // Process the first sheet by default
+                        selectedSheet = workbook.SheetNames[0];
+                        excelData = XLSX.utils.sheet_to_json(workbook.Sheets[selectedSheet], { header: 1 });
+                        
+                        // Update progress
+                        updateProgress(90);
+                        
+                        // Render preview
+                        renderPreview(excelData);
+                        
+                        // Complete processing
+                        updateProgress(100);
+                        setTimeout(() => {
+                            progressContainer.classList.add('hidden');
+                            progressBar.style.width = '0';
+                            loadingSpinner.classList.add('hidden');
+                            previewSection.classList.remove('hidden');
+                            convertBtn.disabled = false;
+                            showStatusMessage('Excel file loaded successfully!', 'success');
+                        }, 500);
+                        
+                    } catch (error) {
+                        console.error('Error processing Excel file:', error);
+                        showStatusMessage('Error processing Excel file: ' + error.message, 'error');
+                        resetLoadingState();
+                    }
+                };
+                
+                reader.onerror = function() {
+                    showStatusMessage('Error reading file', 'error');
+                    resetLoadingState();
+                };
+                
+                reader.readAsArrayBuffer(file);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatusMessage('Error processing Excel file', 'error');
+                resetLoadingState();
+            }
+        }
+        
+        function renderPreview(data) {
+            previewTableHead.innerHTML = '';
+            previewTableBody.innerHTML = '';
+            previewTableFoot.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                previewTableBody.innerHTML = '<tr><td colspan="10" class="text-center p-4">No data to display</td></tr>';
+                return;
+            }
+            
+            // Create table header
+            const headerRow = document.createElement('tr');
+            
+            // Use first row as headers or create default headers
+            const headers = data[0] || [];
+            if (headers.length === 0 && data.length > 1) {
+                // If no headers, create default ones (A, B, C...)
+                for (let i = 0; i < data[1].length; i++) {
+                    const th = document.createElement('th');
+                    th.className = 'p-3 border border-gray-200 dark:border-gray-600 font-medium';
+                    th.textContent = String.fromCharCode(65 + i); // A, B, C...
+                    headerRow.appendChild(th);
+                }
+            } else {
+                // Use the first row as headers
+                headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.className = 'p-3 border border-gray-200 dark:border-gray-600 font-medium';
+                    th.textContent = header || '';
+                    headerRow.appendChild(th);
+                });
+            }
+            
+            previewTableHead.appendChild(headerRow);
+            
+            // Create table body
+            // Start from row 1 if first row was used as headers
+            const startRow = headers.length > 0 ? 1 : 0;
+            const previewRows = Math.min(data.length, startRow + 50); // Limit to 50 rows for preview
+            
+            for (let i = startRow; i < previewRows; i++) {
+                const row = data[i] || [];
+                const tr = document.createElement('tr');
+                
+                for (let j = 0; j < (headers.length || row.length); j++) {
+                    const td = document.createElement('td');
+                    td.className = 'p-3 border border-gray-200 dark:border-gray-600';
+                    td.textContent = row[j] !== undefined ? row[j] : '';
+                    tr.appendChild(td);
+                }
+                
+                previewTableBody.appendChild(tr);
+            }
+            
+            // Add note if rows were truncated
+            if (data.length > previewRows) {
+                const footerRow = document.createElement('tr');
+                const footerCell = document.createElement('td');
+                footerCell.colSpan = headers.length || 10;
+                footerCell.className = 'text-center p-4 text-gray-500 dark:text-gray-400 italic';
+                footerCell.textContent = `Showing ${previewRows - startRow} of ${data.length - startRow} rows`;
+                footerRow.appendChild(footerCell);
+                previewTableFoot.appendChild(footerRow);
+            }
+        }
+        
+        function convertToPDF() {
+            if (!excelData || excelData.length === 0) {
+                showStatusMessage('No data to convert', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                loadingSpinner.classList.remove('hidden');
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '0%';
+                convertBtn.disabled = true;
+                
+                // Initialize PDF
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                // Set font
+                doc.setFont('helvetica');
+                doc.setFontSize(10);
+                
+                // Prepare data for autotable
+                const headers = [];
+                const rows = [];
+                
+                // Use first row as headers if available
+                if (excelData[0] && excelData[0].length > 0) {
+                    excelData[0].forEach(header => {
+                        headers.push(header || '');
+                    });
+                    
+                    // Add data rows starting from index 1
+                    for (let i = 1; i < excelData.length; i++) {
+                        const row = excelData[i] || [];
+                        rows.push(row.map(cell => {
+                            if (cell === undefined || cell === null) return '';
+                            return String(cell);
+                        }));
+                    }
+                } else {
+                    // Create default headers (A, B, C...)
+                    const maxCols = excelData.reduce((max, row) => Math.max(max, row.length), 0);
+                    for (let i = 0; i < maxCols; i++) {
+                        headers.push(String.fromCharCode(65 + i));
+                    }
+                    
+                    // Add all data rows
+                    excelData.forEach(row => {
+                        rows.push(row.map(cell => {
+                            if (cell === undefined || cell === null) return '';
+                            return String(cell);
+                        }));
+                    });
+                }
+                
+                // Add table to PDF
+                doc.autoTable({
+                    head: [headers],
+                    body: rows,
+                    margin: { top: 10, right: 10, bottom: 10, left: 10 },
+                    styles: { 
+                        fontSize: 10,
+                        cellPadding: 2,
+                        overflow: 'linebreak',
+                        valign: 'middle'
+                    },
+                    didParseCell: function(data) {
+                        // Update progress during cell parsing
+                        const progress = Math.min(99, Math.floor(100 * data.row.index / rows.length));
+                        updateProgress(progress);
+                    }
+                });
+                
+                // Save the PDF
+                pdfDoc = doc;
+                
+                // Complete progress
+                updateProgress(100);
+                loadingSpinner.classList.add('hidden');
+                
+                // Enable download button
+                downloadBtn.disabled = false;
+                
+                showStatusMessage('PDF generated successfully! Click Download to save.', 'success');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                showStatusMessage('Error generating PDF: ' + error.message, 'error');
+                resetLoadingState();
+            }
+        }
+        
+        function downloadPDF() {
+            if (!pdfDoc) {
+                showStatusMessage('No PDF to download', 'error');
+                return;
+            }
+            
+            try {
+                const fileName = fileInput.files[0].name.replace(/\.[^/.]+$/, '') + '.pdf';
+                pdfDoc.save(fileName);
+            } catch (error) {
+                console.error('Error downloading PDF:', error);
+                showStatusMessage('Error downloading PDF', 'error');
+            }
+        }
+        
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+            
+            // Add slight random movement to make it feel more natural
+            if (percent < 100) {
+                const randomFluctuation = Math.random() * 3 - 1.5;
+                progressBar.style.width = `${Math.min(percent + randomFluctuation, 99)}%`;
+            }
+            
+            if (percent === 100) {
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                }, 1000);
+            }
+        }
+        
+        function resetConverter() {
+            try {
+                fileInput.value = '';
+                workbook = null;
+                excelData = [];
+                pdfDoc = null;
+                previewTableHead.innerHTML = '';
+                previewTableBody.innerHTML = '';
+                previewTableFoot.innerHTML = '';
+                previewSection.classList.add('hidden');
+                statusMessage.classList.add('hidden');
+                convertBtn.disabled = true;
+                downloadBtn.disabled = true;
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0';
+            } catch (error) {
+                console.error('Error resetting converter:', error);
+                showStatusMessage('Error resetting converter', 'error');
+            }
+        }
+        
+        function resetLoadingState() {
+            loadingSpinner.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            progressBar.style.width = '0';
+            convertBtn.disabled = false;
+        }
+        
+        function showStatusMessage(message, type) {
+            try {
+                statusMessage.textContent = message;
+                statusMessage.className = `mt-4 p-4 rounded-lg border-l-4 font-medium ${type === 'error' ? 'bg-red-500/10 text-red-500 border-red-500' : 'bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark border-primary-light dark:border-primary-dark'}`;
+                statusMessage.classList.remove('hidden');
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    statusMessage.classList.add('hidden');
+                }, 5000);
+            } catch (error) {
+                console.error('Error showing status message:', error);
+            }
+        }
+        
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update theme toggle icon
+            if (isDark) {
+                themeToggle.querySelector('.dark\\:hidden').classList.add('hidden');
+                themeToggle.querySelector('.dark\\:inline').classList.remove('hidden');
+            } else {
+                themeToggle.querySelector('.dark\\:hidden').classList.remove('hidden');
+                themeToggle.querySelector('.dark\\:inline').classList.add('hidden');
+            }
+        }
+        
+        function handleBackToTop() {
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.remove('opacity-100', 'visible');
+                backToTop.classList.add('opacity-0', 'invisible');
+            }
+        }
+        
+        // Initialize particles.js
+        function initParticles() {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#4f46e5"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.3,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#4f46e5",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+        });
+    </script>
+</body>
+</html>

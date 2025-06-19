@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT to PDF Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        /* Base Styles & Reset */
+        :root {
+            --primary-color: #f33434;
+            --primary-dark: #f36b22;
+            --secondary-color: #e6a234;
+            --text-color: #333;
+            --text-light: #666;
+            --text-dark: #111;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #f33434;
+            --primary-dark: #f36b22;
+            --secondary-color: #e6a234;
+            --text-color: #f1f1f1;
+            --text-light: #ccc;
+            --text-dark: #e1e1e1;
+            --bg-light: #121212;
+            --bg-white: #1e1e1e;
+            --box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header Styles */
+        .site-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] .site-header {
+            background: rgba(30, 30, 30, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--primary-color);
+            position: relative;
+        }
+
+        h1:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* Upload Section Styles */
+        .upload-section {
+            border: 2px dashed rgba(67, 97, 238, 0.3);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            background: var(--bg-white);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            display: none;
+            margin-top: 2rem;
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .preview-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        /* Page Grid */
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .page-thumbnail {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            background: var(--bg-white);
+        }
+
+        .page-thumbnail:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .page-thumbnail.selected {
+            border: 2px solid var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .page-number {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .checkbox-container {
+            position: absolute;
+        }
+
+        .page-checkbox {
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .page-checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            background: var(--bg-white);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .page-checkbox:checked+.page-checkbox-custom {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .page-checkbox-custom:after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .page-checkbox:checked+.page-checkbox-custom:after {
+            display: block;
+        }
+
+        .page-thumbnail:hover .page-checkbox {
+            opacity: 1;
+        }
+
+        .page-checkbox:checked {
+            opacity: 1;
+        }
+
+        /* Status Messages */
+        .status {
+            margin: 1.5rem 0;
+            font-weight: 500;
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+
+        .status.error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .status.success {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+
+        .status.loading {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f39c12;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.1);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle i {
+            position: absolute;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle .fa-sun {
+            opacity: 0;
+            transform: rotate(90deg);
+            color: #ffd700;
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-moon {
+            opacity: 0;
+            transform: rotate(90deg);
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-sun {
+            opacity: 1;
+            transform: rotate(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .page-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-file-ppt"></i>
+                <span>PPT to PDF Converter</span>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 data-aos="fade-down">PPT to PDF Converter</h1>
+
+            <div class="upload-section" data-aos="fade-up" data-aos-delay="100">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">Click or drop your PPT here</div>
+                <input type="file" id="pptInput" class="file-input" accept=".pptx">
+                <div class="file-info" id="fileInfo"></div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="spinner" id="spinner"></div>
+
+            <div class="preview-section" id="previewSection" data-aos="fade-up" data-aos-delay="200">
+                <h2>Select Slides to Convert</h2>
+
+                <div class="controls">
+                    <button class="btn" id="selectAllBtn">Select All</button>
+                    <button class="btn btn-secondary" id="deselectAllBtn">Deselect All</button>
+                    <button class="btn btn-secondary" id="invertSelectionBtn">Invert Selection</button>
+                </div>
+
+                <div class="page-grid" id="pageGrid"></div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="convertBtn">Convert to PDF</button>
+                    <button class="btn btn-secondary" id="downloadOriginalBtn">Download Original</button>
+                    <button class="btn btn-secondary" id="resetBtn">Reset Tool</button>
+                </div>
+            </div>
+
+            <div class="status" id="status"></div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // DOM elements
+        const pptInput = document.getElementById('pptInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const spinner = document.getElementById('spinner');
+        const previewSection = document.getElementById('previewSection');
+        const pageGrid = document.getElementById('pageGrid');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const deselectAllBtn = document.getElementById('deselectAllBtn');
+        const invertSelectionBtn = document.getElementById('invertSelectionBtn');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadOriginalBtn = document.getElementById('downloadOriginalBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusDiv = document.getElementById('status');
+        const themeToggle = document.querySelector('.theme-toggle');
+
+        // Application state
+        let selectedPages = new Set();
+        let originalPptBytes = null;
+
+        // Theme toggle functionality
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // Event listeners
+        pptInput.addEventListener('change', handleFileUpload);
+
+        // Drag and drop functionality
+        const uploadSection = document.querySelector('.upload-section');
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.style.borderColor = 'var(--primary-color)';
+            uploadSection.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.borderColor = 'rgba(67, 97, 238, 0.3)';
+            uploadSection.style.backgroundColor = 'var(--bg-white)';
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.style.borderColor = 'rgba(67, 97, 238, 0.3)';
+            uploadSection.style.backgroundColor = 'var(--bg-white)';
+
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+                pptInput.files = e.dataTransfer.files;
+                handleFileUpload();
+            } else {
+                statusDiv.textContent = 'Please drop a PPT file.';
+                statusDiv.className = 'status error';
+            }
+        });
+
+        selectAllBtn.addEventListener('click', selectAllPages);
+        deselectAllBtn.addEventListener('click', deselectAllPages);
+        invertSelectionBtn.addEventListener('click', invertSelection);
+        convertBtn.addEventListener('click', convertToPdf);
+        downloadOriginalBtn.addEventListener('click', downloadOriginal);
+        resetBtn.addEventListener('click', resetTool);
+
+        // Main file upload handler
+        async function handleFileUpload() {
+            const file = pptInput.files[0];
+            if (!file) return;
+
+            // Reset state
+            selectedPages.clear();
+            pageGrid.innerHTML = '';
+            previewSection.style.display = 'none';
+            statusDiv.className = 'status';
+            statusDiv.textContent = '';
+
+            // Show loading state
+            fileInfo.textContent = `Loading ${file.name}...`;
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = 'Processing PPT file...';
+            progressContainer.style.display = 'block';
+            spinner.style.display = 'block';
+
+            try {
+                // Simulate progress for better UX
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress >= 90) clearInterval(progressInterval);
+                    progressBar.style.width = `${Math.min(progress, 90)}%`;
+                }, 200);
+
+                // Load the PPT for processing
+                const arrayBuffer = await file.arrayBuffer();
+                originalPptBytes = arrayBuffer;
+
+                // Complete progress
+                progressBar.style.width = '100%';
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                }, 500);
+
+                // Update UI
+                fileInfo.textContent = `${file.name}`;
+                previewSection.style.display = 'block';
+                statusDiv.className = 'status success';
+                statusDiv.textContent = 'PPT loaded successfully. Select slides to convert.';
+
+                // Render page thumbnails (placeholder for actual PPT slide rendering)
+                renderPageThumbnails();
+            } catch (error) {
+                console.error('Error loading PPT:', error);
+                fileInfo.textContent = `Error loading ${file.name}`;
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Error: ${error.message}`;
+                progressContainer.style.display = 'none';
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        // Render thumbnail previews for each slide
+        function renderPageThumbnails() {
+            // Placeholder for actual PPT slide rendering
+            const numSlides = 5; // Example number of slides
+            for (let i = 1; i <= numSlides; i++) {
+                const thumbnailDiv = document.createElement('div');
+                thumbnailDiv.className = 'page-thumbnail';
+                thumbnailDiv.dataset.pageNumber = i;
+
+                // Add page number
+                const pageNumberDiv = document.createElement('div');
+                pageNumberDiv.className = 'page-number';
+                pageNumberDiv.textContent = i;
+
+                // Add thumbnail image (placeholder)
+                const img = document.createElement('img');
+                img.className = 'thumbnail';
+                img.src = `https://via.placeholder.com/150?text=Slide+${i}`;
+                img.alt = `Slide ${i}`;
+
+                // Add checkbox
+                const checkboxContainer = document.createElement('div');
+                checkboxContainer.className = 'checkbox-container';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'page-checkbox';
+                checkbox.id = `page-${i}-checkbox`;
+                checkbox.dataset.pageNumber = i;
+
+                const checkboxCustom = document.createElement('span');
+                checkboxCustom.className = 'page-checkbox-custom';
+
+                checkbox.addEventListener('change', (e) => {
+                    const pageNum = parseInt(e.target.dataset.pageNumber);
+                    const thumbnail = e.target.closest('.page-thumbnail');
+
+                    if (e.target.checked) {
+                        selectedPages.add(pageNum);
+                        thumbnail.classList.add('selected');
+                    } else {
+                        selectedPages.delete(pageNum);
+                        thumbnail.classList.remove('selected');
+                    }
+                });
+
+                // Click on thumbnail toggles checkbox
+                thumbnailDiv.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+
+                // Assemble the thumbnail
+                checkboxContainer.appendChild(checkbox);
+                checkboxContainer.appendChild(checkboxCustom);
+                thumbnailDiv.appendChild(pageNumberDiv);
+                thumbnailDiv.appendChild(img);
+                thumbnailDiv.appendChild(checkboxContainer);
+                pageGrid.appendChild(thumbnailDiv);
+            }
+        }
+
+        // Selection control functions
+        function selectAllPages() {
+            const checkboxes = document.querySelectorAll('.page-checkbox');
+            checkboxes.forEach(checkbox => {
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        function deselectAllPages() {
+            const checkboxes = document.querySelectorAll('.page-checkbox');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        function invertSelection() {
+            const checkboxes = document.querySelectorAll('.page-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change'));
+            });
+        }
+
+        // Convert to PDF
+        async function convertToPdf() {
+            if (selectedPages.size === 0) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Please select at least one slide to convert.';
+                return;
+            }
+
+            statusDiv.className = 'status loading';
+            statusDiv.textContent = `Creating PDF from selected slides...`;
+            convertBtn.disabled = true;
+            spinner.style.display = 'block';
+
+            try {
+                // Simulate conversion progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress >= 90) clearInterval(progressInterval);
+                    progressBar.style.width = `${Math.min(progress, 90)}%`;
+                }, 200);
+
+                // Simulate PDF creation
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Complete progress
+                progressBar.style.width = '100%';
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                }, 500);
+
+                // Simulate download
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `Success! PDF created with ${selectedPages.size} slides.`;
+                alert('Conversion complete! Download your PDF.');
+            } catch (error) {
+                console.error('Error converting to PDF:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                convertBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        // Download original PPT
+        function downloadOriginal() {
+            if (!originalPptBytes) return;
+
+            const blob = new Blob([originalPptBytes], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'original.pptx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset tool to initial state
+        function resetTool() {
+            // Reset file input
+            pptInput.value = '';
+            fileInfo.textContent = '';
+
+            // Reset preview section
+            selectedPages.clear();
+            pageGrid.innerHTML = '';
+            previewSection.style.display = 'none';
+
+            // Reset status
+            statusDiv.className = 'status';
+            statusDiv.textContent = '';
+
+            // Reset progress
+            progressContainer.style.display = 'none';
+            progressBar.style.width = '0%';
+
+            // Clear stored data
+            originalPptBytes = null;
+        }
+    </script>
+</body>
+
+</html>

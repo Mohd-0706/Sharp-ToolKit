@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Converter | Professional Tool</title>
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
+    <!-- docx.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.min.js"></script>
+    <!-- FileSaver.js for downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS for animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        /* Enhanced Base Styles & Variables */
+        :root {
+            /* Color Palette */
+            --primary-color: #8a2be2;
+            --primary-dark: #7b1fa2;
+            --primary-light: rgba(138, 43, 226, 0.1);
+            --secondary-color: #ff7f50;
+            --accent-color: #32cd32;
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --danger-color: #f43f5e;
+            --dark-color: #1e293b;
+            --light-color: #f8f8f8;
+            --gray-color: #64748b;
+            --gray-light: #e2e8f0;
+
+            /* Text */
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --text-dark: #0f172a;
+            --text-white: #ffffff;
+
+            /* Backgrounds */
+            --bg-light: #f8f8f8;
+            --bg-white: #ffffff;
+            --bg-dark: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --bg-gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+
+            /* Borders */
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 16px;
+            --border-color: #e2e8f0;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+            /* Transitions */
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        [data-theme="dark"] {
+            --text-color: #e2e8f0;
+            --text-light: #94a3b8;
+            --text-dark: #f8fafc;
+            --bg-light: #0f172a;
+            --bg-white: #1e293b;
+            --bg-gradient: var(--bg-gradient-dark);
+            --border-color: #334155;
+            --gray-light: #334155;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition-slow);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            letter-spacing: -0.025em;
+        }
+
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] h4,
+        [data-theme="dark"] h5,
+        [data-theme="dark"] h6 {
+            color: var(--text-white);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header Styles */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-slow);
+            will-change: transform, backdrop-filter, background-color;
+            padding: 1rem 0;
+        }
+
+        [data-theme="dark"] .site-header {
+            background-color: rgba(15, 23, 42, 0.97);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        [data-theme="dark"] .logo {
+            color: var(--text-white);
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        /* Theme Toggle Switch */
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-switch-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-light);
+            transition: var(--transition);
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+
+        .section-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline;
+            background: linear-gradient(90deg, var(--danger-color), var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Upload Section */
+        .upload-section {
+            margin-bottom: 3rem;
+        }
+
+        .upload-box {
+            border: 2px dashed var(--border-color);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+            background: var(--bg-white);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            background-color: var(--primary-light);
+        }
+
+        .upload-box i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .upload-box:hover i {
+            transform: scale(1.1);
+        }
+
+        .upload-box h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .upload-box p {
+            color: var(--text-light);
+        }
+
+        .upload-box input[type="file"] {
+            display: none;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 3px;
+            margin-top: 1.5rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        /* Settings Panel (Hidden Initially) */
+        .settings-panel {
+            background-color: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: none;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .settings-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .settings-title i {
+            font-size: 1.1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+        }
+
+        .margin-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        /* Buttons (Hidden Initially) */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            display: none;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover:before {
+            opacity: 1;
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-outline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline:hover:before {
+            transform: scaleX(1);
+        }
+
+        .btn-outline:active {
+            transform: translateY(1px);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .btn i {
+            font-size: 0.9em;
+        }
+
+        /* Preview Section (Hidden Initially) */
+        .preview-section {
+            background-color: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: none;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .preview-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-count {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .select-all:hover {
+            color: var(--primary-color);
+        }
+
+        .select-all-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .page-thumbnail {
+            position: relative;
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            aspect-ratio: 1/1.414; /* Standard paper aspect ratio */
+        }
+
+        .page-thumbnail:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .page-thumbnail.selected {
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+
+        .page-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background-color: #f5f5f5;
+        }
+
+        [data-theme="dark"] .page-image {
+            background-color: #2a2a2a;
+        }
+
+        .page-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .page-thumbnail:hover .page-checkbox {
+            opacity: 1;
+        }
+
+        .page-thumbnail.selected .page-checkbox {
+            opacity: 1;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            margin: 1rem auto;
+            font-weight: 500;
+            text-align: center;
+            max-width: 800px;
+            display: none;
+        }
+
+        .status-message.error {
+            background-color: rgba(244, 63, 94, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .status-message.success {
+            background-color: rgba(74, 222, 128, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status-message.info {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(138, 43, 226, 0.1);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: var(--dark-color);
+            color: #fff;
+            text-align: center;
+            border-radius: var(--border-radius-sm);
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--dark-color) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-header h1 {
+                font-size: 2rem;
+            }
+
+            .margin-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="/PDFTOOLS/index.html" class="logo">
+                <i class="fas fa-file-word logo-icon"></i>
+                <span>PDF to Word</span>
+            </a>
+            <div class="theme-switch">
+                <span class="theme-switch-label"></span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="section-header" data-aos="fade-down">
+                <h1>PDF to Word Converter</h1>
+                <p>Convert your PDF documents to editable Word files with high accuracy</p>
+            </div>
+            
+            <!-- Upload Section -->
+            <section class="upload-section" data-aos="fade-up" data-aos-delay="100">
+                <div class="upload-box" id="uploadBox" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Upload PDF File</h3>
+                    <p>Click to browse or drag & drop your PDF file here</p>
+                    <input type="file" id="pdf-input" accept=".pdf" />
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+                <div class="status-message" id="status-message"></div>
+            </section>
+            
+            <!-- Settings Panel (Hidden Initially) -->
+            <div class="settings-panel" id="settings-panel">
+                <h3 class="settings-title">
+                    <i class="fas fa-cog"></i>
+                    Document Settings
+                </h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="page-orientation">Page Orientation</label>
+                        <select id="page-orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="page-size">Page Size</label>
+                        <select id="page-size">
+                            <option value="A4">A4 (210 × 297 mm)</option>
+                            <option value="Letter">Letter (8.5 × 11 in)</option>
+                            <option value="Legal">Legal (8.5 × 14 in)</option>
+                            <option value="A5">A5 (148 × 210 mm)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Page Margins (inches)</label>
+                    <div class="margin-inputs">
+                        <div class="form-group">
+                            <label for="margin-top">Top</label>
+                            <input type="number" id="margin-top" min="0" step="0.1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="margin-right">Right</label>
+                            <input type="number" id="margin-right" min="0" step="0.1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="margin-bottom">Bottom</label>
+                            <input type="number" id="margin-bottom" min="0" step="0.1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="margin-left">Left</label>
+                            <input type="number" id="margin-left" min="0" step="0.1" value="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons (Hidden Initially) -->
+            <div class="button-group" id="button-group">
+                <button class="btn btn-primary" id="preview-btn">
+                    <i class="fas fa-eye"></i> Preview PDF
+                </button>
+                <button class="btn btn-primary" id="convert-btn">
+                    <i class="fas fa-file-word"></i> Convert to Word
+                </button>
+                <button class="btn btn-outline" id="reset-btn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+            
+            <div class="spinner" id="loading-spinner"></div>
+
+            <!-- Preview Section (Hidden Initially) -->
+            <div class="preview-section" id="preview-section">
+                <div class="preview-header">
+                    <div>
+                        <h3 class="preview-title">
+                            <i class="fas fa-images"></i>
+                            PDF Preview
+                        </h3>
+                        <div class="page-count" id="page-count">0 pages</div>
+                    </div>
+                    <div class="preview-actions">
+                        <div class="select-all" id="select-all">
+                            <input type="checkbox" class="select-all-checkbox" id="select-all-checkbox">
+                            <label for="select-all-checkbox">Select All</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-container" id="preview-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Back Button -->
+    <a href="/PDFTOOLS/index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Set PDF.js worker path
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.worker.min.js';
+        
+        // DOM elements
+        const pdfInput = document.getElementById('pdf-input');
+        const uploadBox = document.getElementById('uploadBox');
+        const previewBtn = document.getElementById('preview-btn');
+        const convertBtn = document.getElementById('convert-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const previewSection = document.getElementById('preview-section');
+        const previewContainer = document.getElementById('preview-container');
+        const statusMessage = document.getElementById('status-message');
+        const themeToggle = document.getElementById('themeToggle');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const pageCountEl = document.getElementById('page-count');
+        const selectAllCheckbox = document.getElementById('select-all-checkbox');
+        const selectAllLabel = document.querySelector('#select-all label');
+        const settingsPanel = document.getElementById('settings-panel');
+        const buttonGroup = document.getElementById('button-group');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        
+        // Settings elements
+        const pageOrientation = document.getElementById('page-orientation');
+        const pageSize = document.getElementById('page-size');
+        const marginTop = document.getElementById('margin-top');
+        const marginRight = document.getElementById('margin-right');
+        const marginBottom = document.getElementById('margin-bottom');
+        const marginLeft = document.getElementById('margin-left');
+        
+        // Store extracted pages
+        let extractedPages = [];
+        let selectedPages = [];
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            themeToggle.checked = true;
+        }
+        
+        // Theme toggle
+        themeToggle.addEventListener('change', function() {
+            const newTheme = this.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+        
+        // Upload box click handler
+        uploadBox.addEventListener('click', function() {
+            pdfInput.click();
+        });
+        
+        // Drag and drop handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadBox.style.borderColor = 'var(--primary-color)';
+            uploadBox.style.backgroundColor = 'var(--primary-light)';
+        }
+        
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadBox.style.borderColor = 'var(--border-color)';
+            uploadBox.style.backgroundColor = 'var(--bg-white)';
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleDragLeave(e);
+            
+            const file = e.dataTransfer.files[0];
+            if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
+                pdfInput.files = e.dataTransfer.files;
+                handleFileSelection();
+            } else {
+                showStatusMessage('Please upload a valid PDF file', 'error');
+            }
+        }
+        
+        // File input change handler
+        pdfInput.addEventListener('change', handleFileSelection);
+        
+        function handleFileSelection() {
+            if (pdfInput.files && pdfInput.files[0]) {
+                const file = pdfInput.files[0];
+                
+                // Validate file type
+                if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                    showStatusMessage('Please select a valid PDF file', 'error');
+                    return;
+                }
+                
+                // Check file size (limit to 20MB for client-side processing)
+                if (file.size > 20 * 1024 * 1024) {
+                    showStatusMessage('File size exceeds 20MB limit. Please use a smaller PDF.', 'error');
+                    return;
+                }
+                
+                // Update UI
+                uploadBox.querySelector('h3').textContent = file.name;
+                uploadBox.querySelector('p').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                
+                // Show settings and buttons
+                settingsPanel.style.display = 'block';
+                buttonGroup.style.display = 'flex';
+                
+                // Enable buttons
+                previewBtn.disabled = false;
+                convertBtn.disabled = false;
+                
+                clearStatus();
+            }
+        }
+        
+        // Preview PDF button handler
+        previewBtn.addEventListener('click', async function() {
+            if (!pdfInput.files || !pdfInput.files[0]) return;
+            
+            try {
+                showLoading(true);
+                showStatusMessage("Extracting pages from PDF...", 'info');
+                previewContainer.innerHTML = "";
+                progressContainer.style.display = 'block';
+                
+                const file = pdfInput.files[0];
+                const fileUrl = URL.createObjectURL(file);
+                
+                // Show loading progress
+                const loadingTask = pdfjsLib.getDocument({
+                    url: fileUrl,
+                    withCredentials: false
+                });
+                
+                loadingTask.onProgress = function(progressData) {
+                    const percent = Math.round((progressData.loaded / progressData.total) * 100);
+                    progressBar.style.width = `${percent}%`;
+                };
+                
+                const pdf = await loadingTask.promise;
+                extractedPages = [];
+                selectedPages = [];
+                
+                // Reset select all checkbox
+                selectAllCheckbox.checked = false;
+                selectAllLabel.textContent = 'Select All';
+                
+                // Process each page
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    try {
+                        const page = await pdf.getPage(i);
+                        // Increase scale for better quality in Word doc
+                        const viewport = page.getViewport({ scale: 2.0 });
+                        
+                        // Prepare canvas
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        
+                        // Render PDF page to canvas
+                        await page.render({
+                            canvasContext: context,
+                            viewport: viewport
+                        }).promise;
+                        
+                        // Convert canvas to image
+                        const imageData = canvas.toDataURL('image/png', 1.0); // Highest quality
+                        extractedPages.push({
+                            dataUrl: imageData,
+                            width: viewport.width,
+                            height: viewport.height
+                        });
+                        selectedPages.push(i); // Select page by default
+                        
+                        // Update progress
+                        const percent = Math.round((i / pdf.numPages) * 100);
+                        progressBar.style.width = `${percent}%`;
+                        
+                        // Update status periodically
+                        if (i % 5 === 0 || i === pdf.numPages) {
+                            showStatusMessage(`Processing page ${i} of ${pdf.numPages}...`, 'info');
+                        }
+                    } catch (error) {
+                        console.error(`Error processing page ${i}:`, error);
+                        throw new Error(`Failed to process page ${i}. The PDF might be corrupted.`);
+                    }
+                }
+                
+                // Display preview
+                displayPageThumbnails();
+                previewSection.style.display = 'block';
+                pageCountEl.textContent = `${extractedPages.length} page${extractedPages.length !== 1 ? 's' : ''}`;
+                
+                showStatusMessage(`Successfully extracted ${extractedPages.length} pages.`, 'success');
+                scrollToPreview();
+            } catch (error) {
+                showStatusMessage("Error: " + error.message, 'error');
+                console.error(error);
+            } finally {
+                showLoading(false);
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0';
+            }
+        });
+        
+        // Display page thumbnails
+        function displayPageThumbnails() {
+            previewContainer.innerHTML = "";
+            
+            extractedPages.forEach((page, index) => {
+                const pageNumber = index + 1;
+                const thumbnail = document.createElement('div');
+                thumbnail.className = `page-thumbnail ${selectedPages.includes(pageNumber) ? 'selected' : ''}`;
+                thumbnail.innerHTML = `
+                    <img src="${page.dataUrl}" alt="Page ${pageNumber}" class="page-image">
+                    <input type="checkbox" class="page-checkbox" id="page-${pageNumber}" 
+                           ${selectedPages.includes(pageNumber) ? 'checked' : ''} 
+                           data-page="${pageNumber}">
+                    <div class="page-number">Page ${pageNumber}</div>
+                `;
+                
+                // Add click handler for the thumbnail
+                thumbnail.addEventListener('click', function(e) {
+                    // Don't toggle if checkbox was clicked directly
+                    if (e.target.classList.contains('page-checkbox')) return;
+                    
+                    const checkbox = this.querySelector('.page-checkbox');
+                    checkbox.checked = !checkbox.checked;
+                    togglePageSelection(checkbox);
+                });
+                
+                // Add change handler for the checkbox
+                const checkbox = thumbnail.querySelector('.page-checkbox');
+                checkbox.addEventListener('change', function() {
+                    togglePageSelection(this);
+                });
+                
+                previewContainer.appendChild(thumbnail);
+            });
+        }
+        
+        // Toggle page selection
+        function togglePageSelection(checkbox) {
+            const pageNumber = parseInt(checkbox.dataset.page);
+            const thumbnail = checkbox.closest('.page-thumbnail');
+            
+            if (checkbox.checked) {
+                if (!selectedPages.includes(pageNumber)) {
+                    selectedPages.push(pageNumber);
+                }
+                thumbnail.classList.add('selected');
+            } else {
+                selectedPages = selectedPages.filter(p => p !== pageNumber);
+                thumbnail.classList.remove('selected');
+            }
+            
+            // Update select all checkbox
+            updateSelectAllCheckbox();
+        }
+        
+        // Update select all checkbox state
+        function updateSelectAllCheckbox() {
+            const allChecked = selectedPages.length === extractedPages.length;
+            const someChecked = selectedPages.length > 0 && selectedPages.length < extractedPages.length;
+            
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked;
+            
+            if (allChecked) {
+                selectAllLabel.textContent = 'Deselect All';
+            } else {
+                selectAllLabel.textContent = 'Select All';
+            }
+        }
+        
+        // Select all/deselect all handler
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = previewContainer.querySelectorAll('.page-checkbox');
+            
+            if (this.checked) {
+                // Select all pages
+                selectedPages = Array.from({ length: extractedPages.length }, (_, i) => i + 1);
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                    checkbox.closest('.page-thumbnail').classList.add('selected');
+                });
+                selectAllLabel.textContent = 'Deselect All';
+            } else {
+                // Deselect all pages
+                selectedPages = [];
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.closest('.page-thumbnail').classList.remove('selected');
+                });
+                selectAllLabel.textContent = 'Select All';
+            }
+        });
+        
+        // Convert to Word button handler
+        convertBtn.addEventListener('click', async function() {
+            if (extractedPages.length === 0) {
+                showStatusMessage("Please extract pages first by clicking Preview PDF.", 'error');
+                return;
+            }
+            
+            if (selectedPages.length === 0) {
+                showStatusMessage("Please select at least one page to convert.", 'error');
+                return;
+            }
+            
+            try {
+                showLoading(true);
+                showStatusMessage("Converting to Word document...", 'info');
+                
+                // Filter pages based on selection
+                const pagesToConvert = [];
+                for (const pageNumber of selectedPages) {
+                    if (pageNumber <= extractedPages.length) {
+                        pagesToConvert.push(extractedPages[pageNumber - 1]);
+                    }
+                }
+                
+                await createWordDocFromImages(pagesToConvert);
+                
+                showStatusMessage("Word document created successfully!", 'success');
+            } catch (error) {
+                showStatusMessage("Error: " + error.message, 'error');
+                console.error(error);
+            } finally {
+                showLoading(false);
+            }
+        });
+        
+        // Reset button handler
+        resetBtn.addEventListener('click', function() {
+            // Reset file input
+            pdfInput.value = '';
+            uploadBox.querySelector('h3').textContent = 'Upload PDF File';
+            uploadBox.querySelector('p').textContent = 'Click to browse or drag & drop your PDF file here';
+            
+            // Hide settings and buttons
+            settingsPanel.style.display = 'none';
+            buttonGroup.style.display = 'none';
+            
+            // Reset preview
+            previewContainer.innerHTML = '';
+            previewSection.style.display = 'none';
+            extractedPages = [];
+            selectedPages = [];
+            
+            // Reset buttons
+            previewBtn.disabled = true;
+            convertBtn.disabled = true;
+            
+            // Reset status
+            clearStatus();
+            
+            // Reset progress
+            progressContainer.style.display = 'none';
+            progressBar.style.width = '0';
+            
+            // Reset select all
+            selectAllCheckbox.checked = false;
+            selectAllCheckbox.indeterminate = false;
+            selectAllLabel.textContent = 'Select All';
+        });
+        
+        // Helper functions
+        function showStatusMessage(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+            statusMessage.style.display = 'block';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                if (statusMessage.textContent === message) {
+                    statusMessage.style.display = 'none';
+                }
+            }, 5000);
+        }
+        
+        function clearStatus() {
+            statusMessage.textContent = '';
+            statusMessage.className = 'status-message';
+            statusMessage.style.display = 'none';
+        }
+        
+        function showLoading(show) {
+            if (show) {
+                loadingSpinner.style.display = 'block';
+                previewBtn.disabled = true;
+                convertBtn.disabled = true;
+                resetBtn.disabled = true;
+            } else {
+                loadingSpinner.style.display = 'none';
+                previewBtn.disabled = false;
+                convertBtn.disabled = false;
+                resetBtn.disabled = false;
+            }
+        }
+        
+        function scrollToPreview() {
+            if (previewSection.style.display === 'block') {
+                previewSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        
+        // Create Word document from images with configurable settings
+        async function createWordDocFromImages(pages) {
+            showStatusMessage("Preparing Word document...", 'info');
+            
+            // Get settings from UI
+            const orientation = pageOrientation.value;
+            const size = pageSize.value;
+            const margins = {
+                top: parseFloat(marginTop.value),
+                right: parseFloat(marginRight.value),
+                bottom: parseFloat(marginBottom.value),
+                left: parseFloat(marginLeft.value)
+            };
+            
+            // Validate margins
+            if (Object.values(margins).some(m => isNaN(m) || m < 0)) {
+                throw new Error("Please enter valid margin values (numbers greater than or equal to 0)");
+            }
+            
+            // Convert inches to twips (1 inch = 1440 twips)
+            const marginTwips = {
+                top: margins.top * 1440,
+                right: margins.right * 1440,
+                bottom: margins.bottom * 1440,
+                left: margins.left * 1440
+            };
+            
+            // Prepare document children
+            const children = [];
+            
+            for (let i = 0; i < pages.length; i++) {
+                try {
+                    const page = pages[i];
+                    const dataUrl = page.dataUrl;
+                    
+                    // Convert data URL to Uint8Array
+                    const binaryString = atob(dataUrl.split(',')[1]);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let j = 0; j < binaryString.length; j++) {
+                        bytes[j] = binaryString.charCodeAt(j);
+                    }
+                    
+                    // Add section break for each page except the first
+                    if (i > 0) {
+                        children.push(new docx.Paragraph({
+                            children: [new docx.PageBreak()],
+                        }));
+                    }
+                    
+                    // Calculate image dimensions while maintaining aspect ratio
+                    const maxWidth = 600; // Max width in points
+                    const maxHeight = 800; // Max height in points
+                    
+                    let width = page.width * 0.75; // Convert from pixels to points (1px = 0.75pt)
+                    let height = page.height * 0.75;
+                    
+                    // Maintain aspect ratio
+                    if (width > maxWidth) {
+                        const ratio = maxWidth / width;
+                        width = maxWidth;
+                        height = height * ratio;
+                    }
+                    
+                    if (height > maxHeight) {
+                        const ratio = maxHeight / height;
+                        height = maxHeight;
+                        width = width * ratio;
+                    }
+                    
+                    // Add image to document
+                    children.push(new docx.Paragraph({
+                        children: [
+                            new docx.ImageRun({
+                                data: bytes,
+                                transformation: {
+                                    width: width,
+                                    height: height,
+                                },
+                            }),
+                        ],
+                        spacing: {
+                            before: marginTwips.top / 20, // Convert twips to points
+                            after: marginTwips.bottom / 20,
+                        },
+                        indent: {
+                            left: marginTwips.left / 20,
+                            right: marginTwips.right / 20,
+                        }
+                    }));
+                    
+                    // Update status periodically
+                    if (i % 5 === 0 || i === pages.length - 1) {
+                        showStatusMessage(`Processing page ${i + 1} of ${pages.length}...`, 'info');
+                    }
+                } catch (error) {
+                    console.error(`Error processing page ${i + 1}:`, error);
+                    throw new Error(`Failed to process page ${i + 1}. The conversion might be incomplete.`);
+                }
+            }
+            
+            // Create document with proper page settings
+            const doc = new docx.Document({
+                sections: [{
+                    properties: {
+                        page: {
+                            margin: marginTwips,
+                            size: {
+                                orientation: orientation === 'landscape' ? 
+                                    docx.PageOrientation.LANDSCAPE : docx.PageOrientation.PORTRAIT,
+                                width: getPageWidth(size, orientation),
+                                height: getPageHeight(size, orientation)
+                            }
+                        }
+                    },
+                    children: children
+                }]
+            });
+            
+            // Generate and download
+            showStatusMessage("Generating Word file...", 'info');
+            const blob = await docx.Packer.toBlob(doc);
+            saveAs(blob, "converted.docx");
+        }
+        
+        // Helper function to get page dimensions based on size and orientation
+        function getPageWidth(size, orientation) {
+            // Dimensions in twips (1 inch = 1440 twips)
+            const sizes = {
+                'A4': { width: 8.27, height: 11.69 }, // inches
+                'Letter': { width: 8.5, height: 11 },
+                'Legal': { width: 8.5, height: 14 },
+                'A5': { width: 5.83, height: 8.27 }
+            };
+            
+            const dimensions = sizes[size] || sizes['A4'];
+            return (orientation === 'landscape' ? dimensions.height : dimensions.width) * 1440;
+        }
+        
+        function getPageHeight(size, orientation) {
+            const sizes = {
+                'A4': { width: 8.27, height: 11.69 }, // inches
+                'Letter': { width: 8.5, height: 11 },
+                'Legal': { width: 8.5, height: 14 },
+                'A5': { width: 5.83, height: 8.27 }
+            };
+            
+            const dimensions = sizes[size] || sizes['A4'];
+            return (orientation === 'landscape' ? dimensions.width : dimensions.height) * 1440;
+        }
+    </script>
+</body>
+</html>
