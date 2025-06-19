@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["PDF", "IMAGES", "VIDEOS", "TOOLS"],
+  "author": "MOHAMMED IRFAN",
   "license": "ISC",
-  "description": "",
+  "description": "SHARP TOOLKIT IS PROVIDES PDF, IMAGES, VIDEO AND MORE TOOLS KIT",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.10",
     "tailwindcss": "^4.1.10"
