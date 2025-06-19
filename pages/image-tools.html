@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth overflow-x-hidden">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Free online tools to simplify your work with PDFs, images, and videos. No installation required - process files directly in your browser.">
+    <title>SharpToolKit - Free Online File Tools</title>
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" as="script">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/sharplogo/logo.png" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="/src/output.css">
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!--Tailwind CSS-->
+    <link rel="stylesheet" href="/src/output.css">
+
+    <style>
+        /* Header specific styles */
+        .header-container {
+            max-width: 1440px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #4f46e5;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .search-container {
+            width: 220px;
+            transition: width 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            width: 280px;
+        }
+
+        /* Mobile menu transition */
+        .mobile-menu {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* FAQ transitions */
+        .faq-answer {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Scroll animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Back to top button */
+        #backToTop {
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 1024px) {
+            .header-container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="overflow-x-hidden text-gray-800 transition-colors duration-300 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800 dark:text-gray-200">
+
+    <!-- Header -->
+    <header
+        class="fixed top-0 left-0 z-40 w-full transition-all duration-300 shadow-sm bg-white/80 backdrop-blur-md dark:bg-slate-900/80">
+        <div class="flex items-center justify-between h-16 px-4 mx-auto max-w-7xl lg:px-8">
+            <!-- Logo -->
+            <a href="/index.html" class="flex items-center space-x-2">
+                <img src="/assets/sharplogo/logo.png" alt="Logo" width="40" height="40">
+                <span class="text-xl font-bold">Sharp <span
+                        class="text-indigo-600 dark:text-violet-500">ToolKit</span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav id="desktop-nav" class="hidden space-x-2 lg:flex">
+                <a href="/index.html"
+                    class="font-medium text-gray-700 hover:text-white hover:bg-indigo-600 px-3 py-2 rounded-lg transition-all">Home</a>
+                <a href="/pages/pdf-tools.html"
+                    class="font-medium text-gray-700 hover:text-white hover:bg-indigo-600 px-3 py-2 rounded-lg transition-all">PDF
+                    Tools</a>
+                <a href="/pages/image-tools.html"
+                    class="font-medium text-gray-700 hover:text-white hover:bg-indigo-600 px-3 py-2 rounded-lg transition-all">Image
+                    Tools</a>
+                <a href="/pages/all-tools.html"
+                    class="font-medium text-gray-700 hover:text-white hover:bg-indigo-600 px-3 py-2 rounded-lg transition-all">All
+                    Tools</a>
+                <a href="/pages/how-it-works.html"
+                    class="font-medium text-gray-700 hover:text-white hover:bg-indigo-600 px-3 py-2 rounded-lg transition-all">How
+                    it Works</a>
+            </nav>
+
+            <!-- Right Controls -->
+            <div class="flex items-center space-x-4">
+                <!-- Desktop Search -->
+                <div class="relative hidden lg:block">
+                    <input id="desktop-search-input" type="text" placeholder="Search tools..."
+                        class="py-2 pl-4 pr-10 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 bg-white dark:bg-slate-800 dark:border-gray-700 dark:text-gray-300">
+                    <button
+                        class="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2 hover:text-indigo-600 dark:hover:text-violet-500">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <!-- Dropdown -->
+                    <ul id="desktop-search-results"
+                        class="absolute left-0 z-50 mt-2 w-full bg-white rounded-xl border border-gray-200 shadow-lg hidden max-h-60 overflow-y-auto text-sm text-gray-700 dark:bg-slate-800 dark:border-gray-700 dark:text-gray-300">
+                    </ul>
+                </div>
+
+                <!-- Mobile Search Button -->
+                <button id="mobile-search-btn"
+                    class="block p-2 text-gray-600 lg:hidden hover:text-indigo-600 dark:text-gray-400 dark:hover:text-violet-500">
+                    <i class="fas fa-search"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn"
+                    class="block p-2 text-gray-600 lg:hidden hover:text-indigo-600 dark:text-gray-400 dark:hover:text-violet-500">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div id="mobile-search-container"
+            class="hidden px-4 py-2 bg-white border-t border-gray-200 lg:hidden dark:bg-slate-900 dark:border-gray-800">
+            <div class="relative">
+                <input id="mobile-search-input" type="text" placeholder="Search tools..."
+                    class="w-full py-2 pl-4 pr-10 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-gray-700 dark:text-gray-300">
+                <ul id="mobile-search-results"
+                    class="absolute z-50 mt-2 w-full bg-white border rounded-md shadow hidden max-h-60 overflow-y-auto text-sm dark:bg-slate-800 dark:border-gray-700 dark:text-gray-300">
+                </ul>
+                <button
+                    class="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2 hover:text-indigo-600 dark:hover:text-violet-500">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="fixed top-0 right-0 z-50 w-64 h-full transition-transform duration-300 transform translate-x-full bg-white shadow-xl lg:hidden dark:bg-slate-900">
+            <div
+                class="flex items-center justify-between p-4 bg-white border-b border-gray-200 dark:bg-slate-900 dark:border-gray-800">
+                <div class="flex items-center space-x-2">
+                    <img src="/assets/sharplogo/logo.png" alt="Logo" width="32" height="32">
+                    <span class="text-lg font-bold">Sharp <span
+                            class="text-indigo-600 dark:text-violet-500">ToolKit</span></span>
+                </div>
+                <button id="mobile-menu-close"
+                    class="p-1 text-gray-600 rounded-full hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-violet-500">
+                    <i class="text-xl fas fa-times"></i>
+                </button>
+            </div>
+
+            <nav class="p-4 space-y-2 bg-white">
+                <a href="/index.html"
+                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100 active:bg-indigo-50 active:scale-[0.98] transition transform duration-100">
+
+                    <i class="w-6 mr-3 text-gray-500 fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+
+                <a href="/pages/pdf-tools.html"
+                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100 active:bg-indigo-50 active:scale-[0.98] transition transform duration-100">
+
+                    <i class="w-6 mr-3 text-red-500 fas fa-file-pdf"></i>
+                    <span>PDF Tools</span>
+                </a>
+
+                <a href="/pages/image-tools.html"
+                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100 active:bg-indigo-50 active:scale-[0.98] transition transform duration-100">
+                    <i class="w-6 mr-3 text-blue-500 fas fa-image"></i>
+                    <span>Image Tools</span>
+                </a>
+
+                <!--<a href="/pages/video-tools.html"
+                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100">
+                    <i class="w-6 mr-3 text-purple-500 fas fa-video"></i>
+                    <span>Video Tools</span>
+                </a>-->
+
+                <a href="/pages/all-tools.html"
+                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100 active:bg-indigo-50 active:scale-[0.98] transition transform duration-100">
+
+                    <i class="w-6 mr-3 text-indigo-500 fas fa-tools"></i>
+                    <span>All Tools</span>
+                </a>
+
+                <a href="/pages/how-it-works.html"
+                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100 active:bg-indigo-50 active:scale-[0.98] transition transform duration-100">
+
+                    <i class="w-6 mr-3 text-green-500 fas fa-question-circle"></i>
+                    <span>How it works</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 main-content">
+        <!-- Hero Section -->
+        <section
+            class="relative py-20 overflow-hidden bg-gradient-to-br from-indigo-600/5 to-emerald-500/5 dark:from-violet-600/5 dark:to-green-400/5">
+            <div id="hero-shapes" class="absolute inset-0 z-0"></div>
+            <div
+                class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-transparent via-white/30 to-transparent dark:via-slate-900/30">
+            </div>
+            <div class="container relative z-10 px-6 mx-auto">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h1 class="mb-6 text-4xl font-bold leading-tight md:text-5xl">
+                        Image <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-emerald-500 dark:from-violet-600 dark:to-green-400">Tools</span>
+                    </h1>
+                    <p class="mb-8 text-lg text-gray-600 dark:text-gray-300">
+                        Transform your Images with our powerful tools.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Image Tools Section -->
+        <section class="relative py-20 overflow-hidden">
+            <!-- Background Blur -->
+            <div
+                class="absolute w-full h-full rounded-full -bottom-1/4 -left-1/4 bg-gradient-to-tr from-blue-500/20 to-transparent dark:from-blue-400/10 filter blur-3xl opacity-70 -z-10">
+            </div>
+
+            <div class="container px-6 mx-auto">
+                <div class="mb-16 text-center">
+                    <h2 class="mb-4 text-4xl font-bold">All Image Tools</h2>
+                    <p class="max-w-2xl mx-auto text-lg text-gray-600 dark:text-gray-400">Complete suite of image
+                        utilities for all your needs</p>
+                </div>
+
+                <!-- Tabs for Image Tools -->
+                <div class="flex flex-wrap justify-center gap-2 mb-10">
+                    <button
+                        class="px-6 py-2 font-medium text-indigo-600 border-2 border-indigo-600 rounded-full tab-btn dark:border-violet-600 dark:text-violet-600 bg-indigo-600/10 dark:bg-violet-600/10"
+                        data-tab="basic-tools">Basic Tools</button>
+                    <button
+                        class="px-6 py-2 font-medium text-gray-600 border-2 border-transparent rounded-full tab-btn hover:border-gray-300 dark:hover:border-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                        data-tab="convert-to-jpg">Convert to JPG</button>
+                    <button
+                        class="px-6 py-2 font-medium text-gray-600 border-2 border-transparent rounded-full tab-btn hover:border-gray-300 dark:hover:border-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                        data-tab="convert-from-jpg">Convert from JPG</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Basic Tools Tab -->
+                    <div class="image-tab-pane tab-pane active" id="basic-tools">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <!-- Compress Image -->
+                            <a href="/tools/image/compress-image.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                        <i class="fas fa-compress"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">Compress Image</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Reduce image file size while preserving
+                                        quality</p>
+                                    <div
+                                        class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Resize Image -->
+                            <a href="/tools/image/resize-image.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
+                                        <i class="fas fa-expand"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">Resize Image</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Change image dimensions while
+                                        maintaining aspect ratio</p>
+                                    <div
+                                        class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Crop Image -->
+                            <a href="/tools/image/crop-image.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                        <i class="fas fa-crop"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">Crop Image</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Remove unwanted parts from your images
+                                    </p>
+                                    <div
+                                        class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Convert to JPG Tab -->
+                    <div class="hidden tab-pane" id="convert-to-jpg">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <!-- JPG to ICO -->
+                            <a href="/tools/image/jpg-to-ico.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-yellow-400/5 dark:from-yellow-600/5 dark:to-yellow-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-400 dark:from-yellow-600 dark:to-yellow-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">JPG to ICO</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert JPG images to ICO icon format
+                                    </p>
+                                    <div
+                                        class="flex items-center mt-6 text-yellow-500 transition-colors dark:text-yellow-400 group-hover:text-yellow-600 dark:group-hover:text-yellow-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- JPG to PNG -->
+                            <a href="/tools/image/jpg-to-png.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">JPG to PNG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert JPG images to PNG format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- JPG to SVG -->
+                            <a href="/tools/image/jpg-to-svg.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">JPG to SVG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert JPG images to SVG vector format
+                                    </p>
+                                    <div
+                                        class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- JPG to RAW -->
+                            <a href="/tools/image/jpg-to-raw.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">JPG to RAW</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert JPG images to RAW format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- JPG to WEBP -->
+                            <a href="/tools/image/jpg-to-webp.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">JPG to WEBP</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert JPG images to WEBP format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Convert from JPG Tab -->
+                    <div class="hidden tab-pane" id="convert-from-jpg">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <!-- ICO to JPG -->
+                            <a href="/tools/image/ico-to-jpg.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-yellow-400/5 dark:from-yellow-600/5 dark:to-yellow-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-400 dark:from-yellow-600 dark:to-yellow-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">ICO to JPG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert ICO icons to JPG format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-yellow-500 transition-colors dark:text-yellow-400 group-hover:text-yellow-600 dark:group-hover:text-yellow-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- PNG to JPG -->
+                            <a href="/tools/image/png-to-jpg.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">PNG to JPG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert PNG images to JPG format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- SVG to JPG -->
+                            <a href="/tools/image/svg-to-jpg.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">SVG to JPG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert SVG vectors to JPG format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- WEBP to JPG -->
+                            <a href="/tools/image/webp-to-jpg.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">WEBP to JPG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert WEBP images to JPG format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- RAW to JPG -->
+                            <a href="/tools/image/raw-to-jpg.html"
+                                class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
+                                </div>
+                                <div class="relative z-10 p-6">
+                                    <div
+                                        class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <h3 class="mb-2 text-xl font-semibold">RAW to JPG</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Convert RAW images to JPG format</p>
+                                    <div
+                                        class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                                        <span class="mr-2 font-medium">Try Now</span>
+                                        <i
+                                            class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- CTA Section -->
+        <section
+            class="relative py-20 overflow-hidden bg-gradient-to-br from-indigo-600 to-emerald-500 dark:from-violet-600 dark:to-green-400">
+            <div class="absolute inset-0 opacity-10">
+                <div
+                    class="absolute w-64 h-64 bg-white rounded-full top-1/4 left-1/4 filter blur-3xl animate-pulse-slow">
+                </div>
+                <div
+                    class="absolute bg-white rounded-full bottom-1/3 right-1/4 w-80 h-80 filter blur-3xl animate-pulse-slow animation-delay-2000">
+                </div>
+            </div>
+
+            <div class="container relative px-6 mx-auto">
+                <div class="text-center">
+                    <h2 class="mb-6 text-4xl font-bold text-white">Ready to Get Started?</h2>
+                    <p class="max-w-2xl mx-auto mb-8 text-xl text-white/90"></p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="/pages/popular-tools.html"
+                            class="flex items-center px-8 py-4 font-medium text-indigo-600 transition-all duration-300 bg-white rounded-full shadow-lg group hover:bg-gray-100 hover:shadow-xl dark:text-violet-600 dark:bg-white">
+                            <span>Try Our Tools</span>
+                            <i class="ml-2 transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="pt-16 pb-8 bg-white border-t border-gray-200">
+        <div class="container px-6 mx-auto">
+            <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <i class="mr-3 text-3xl text-indigo-600 fas fa-file-pdf"></i>
+                        <h3 class="text-2xl font-bold">Sharp <span class="text-indigo-600">ToolKit</span></h3>
+                    </div>
+                    <p class="max-w-md mb-6 text-gray-600">
+                        Your complete solution for PDF, image, and video processing. Fast, secure, and completely free.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="mb-4 text-lg font-semibold">PDF Tools</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/tools/organizepdf/merge.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Merge PDF</a></li>
+                        <li><a href="/tools/organizepdf/splitpdf.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Split PDF</a></li>
+                        <li><a href="/tools/organizepdf/compresspdf.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Compress PDF</a></li>
+                        <li><a href="/tools/convert-to-pdf/jpg-to-pdf.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">JPG to PDF</a></li>
+                        <li><a href="/tools/convert-to-pdf/word-to-pdf.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Word to PDF</a></li>
+                        <li><a href="/tools/editpdf/rotate-pdf.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Rotate PDF</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-4 text-lg font-semibold">Image & Video Tools</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/tools/image/compress-image.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Compress Image</a></li>
+                        <li><a href="/tools/image/convert-image.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Convert Image</a></li>
+                        <li><a href="/tools/image/resize-image.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Resize Image</a></li>
+                        <li><a href="/tools/video/compress-video.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Compress Video</a></li>
+                        <li><a href="/tools/video/convert-video.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Convert Video</a></li>
+                        <li><a href="/tools/video/trim-video.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Trim Video</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-4 text-lg font-semibold">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/pages/how-it-works.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">How It Works</a></li>
+                        <li><a href="/pages/privacy-policy.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Privacy Policy</a></li>
+                        <li><a href="/pages/terms.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Terms of Service</a></li>
+                        <li><a href="/contact/contact-us.html"
+                                class="text-gray-600 transition-colors hover:text-indigo-600">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-between pt-8 mt-12 border-t border-gray-200 md:flex-row">
+                <p class="mb-4 text-gray-500 md:mb-0">© 2023 SharpToolKit. All rights reserved.</p>
+                <div class="flex items-center space-x-6">
+                    <a href="#accessibility"
+                        class="text-gray-500 transition-colors hover:text-indigo-600">Accessibility</a>
+                    <button id="backToTop"
+                        class="flex items-center justify-center w-10 h-10 text-gray-600 transition-colors bg-gray-100 rounded-full hover:bg-gray-200">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/particles.js"></script>
+    <script src="/assets/js/transitions.js"></script>
+
+
+</body>
+
+</html>
