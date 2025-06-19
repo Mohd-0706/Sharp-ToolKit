@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
         content="Free online tools to simplify your work with PDFs, images, and videos. No installation required - process files directly in your browser.">
-    <title>SharpToolKit - Free Online File Tools</title>
+    <title>SharpToolKit - Free Online PDF Tools</title>
 
     <!-- Preload critical resources -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
@@ -113,6 +113,11 @@
             .mobile-menu-btn {
                 display: block;
             }
+        }
+
+        /* Tool grid adjustments */
+        .tools-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         }
     </style>
 </head>
@@ -232,12 +237,6 @@
                     <span>Image Tools</span>
                 </a>
 
-                <!--<a href="/pages/video-tools.html"
-                    class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100">
-                    <i class="w-6 mr-3 text-purple-500 fas fa-video"></i>
-                    <span>Video Tools</span>
-                </a>-->
-
                 <a href="/pages/all-tools.html"
                     class="flex items-center px-4 py-3 text-gray-800 rounded-lg hover:bg-gray-100 active:bg-indigo-50 active:scale-[0.98] transition transform duration-100">
 
@@ -278,660 +277,616 @@
         </section>
 
         <!-- All PDF Tools Section -->
-        <section class="relative py-20 overflow-hidden">
+        <section class="relative py-12 overflow-hidden">
             <!-- Background Blur -->
             <div
                 class="absolute w-full h-full rounded-full -bottom-1/4 -left-1/4 bg-gradient-to-tr from-emerald-500/20 to-transparent dark:from-green-400/10 filter blur-3xl opacity-70 -z-10">
             </div>
 
-
-
-
-
-            <!-- Tabs -->
-            <div class="flex flex-wrap justify-center gap-2 mb-10">
-                <button
-                    class="px-6 py-2 font-medium text-indigo-600 border-2 border-indigo-600 rounded-full tab-btn dark:border-violet-600 dark:text-violet-600 bg-indigo-600/10 dark:bg-violet-600/10"
-                    data-tab="organize">Organize PDF</button>
-                <button
-                    class="px-6 py-2 font-medium text-gray-600 border-2 border-transparent rounded-full tab-btn hover:border-gray-300 dark:hover:border-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                    data-tab="convert1">Convert to PDF</button>
-                <button
-                    class="px-6 py-2 font-medium text-gray-600 border-2 border-transparent rounded-full tab-btn hover:border-gray-300 dark:hover:border-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                    data-tab="convert2">Convert from PDF</button>
-                <button
-                    class="px-6 py-2 font-medium text-gray-600 border-2 border-transparent rounded-full tab-btn hover:border-gray-300 dark:hover:border-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                    data-tab="edit">Edit PDF</button>
-                <button
-                    class="px-6 py-2 font-medium text-gray-600 border-2 border-transparent rounded-full tab-btn hover:border-gray-300 dark:hover:border-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                    data-tab="security">Security PDF</button>
-            </div>
-
-            <!-- Tab Content -->
-            <div class="tab-content">
-                <!-- Organize PDF Tab -->
-                <div class="tab-pane active" id="organize">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        <!-- Merge PDF -->
-                        <a href="/tools/organizepdf/merge.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 to-emerald-500/5 dark:from-violet-600/5 dark:to-green-400/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-500 dark:from-violet-600 dark:to-green-400">
-                                    <i class="fas fa-object-group"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Merge PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Combine multiple PDFs into one document
-                                </p>
-                                <div
-                                    class="flex items-center mt-6 text-indigo-600 transition-colors dark:text-violet-600 group-hover:text-emerald-500 dark:group-hover:text-green-400">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Split PDF -->
-                        <a href="/tools/organizepdf/splitpdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
-                                    <i class="fas fa-cut"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Split PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Separate PDF pages into individual files
-                                </p>
-                                <div
-                                    class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Remove Pages -->
-                        <a href="/tools/organizepdf/removepages.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
-                                    <i class="fas fa-file"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Remove Pages</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Remove unwanted pages from a PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Compress PDF -->
-                        <a href="/tools/organizepdf/compresspdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
-                                    <i class="fas fa-compress"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Compress PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Compress PDF files for smaller file
-                                    sizes</p>
-                                <div
-                                    class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Repair PDF -->
-                        <a href="/tools/organizepdf/repairpdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-yellow-400/5 dark:from-yellow-600/5 dark:to-yellow-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-400 dark:from-yellow-600 dark:to-yellow-500">
-                                    <i class="fas fa-screwdriver-wrench"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Repair PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Repair PDF files and fix errors</p>
-                                <div
-                                    class="flex items-center mt-6 text-yellow-500 transition-colors dark:text-yellow-400 group-hover:text-yellow-600 dark:group-hover:text-yellow-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Reorder PDF -->
-                        <a href="/tools/organizepdf/reorderpdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
-                                    <i class="fas fa-sort-numeric-up"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Reorder PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Rearrange PDF pages in any order</p>
-                                <div
-                                    class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+            <div class="container px-6 mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white">All PDF Tools</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-600 dark:text-gray-400">
+                        Browse our complete collection of PDF tools to find exactly what you need
+                    </p>
                 </div>
 
-                <!-- Convert to PDF Tab -->
-                <div class="hidden tab-pane" id="convert1">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        <!-- JPG to PDF -->
-                        <a href="/tools/convert-to-pdf/jpg-to-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                <div class="grid gap-6 tools-grid md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Merge PDF -->
+                    <a href="/tools/organizepdf/merge.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 to-emerald-500/5 dark:from-violet-600/5 dark:to-green-400/5">
+                        </div>
+                        <div class="relative z-10 p-6">
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-500 dark:from-violet-600 dark:to-green-400">
+                                <i class="fas fa-object-group"></i>
                             </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
-                                    <i class="fas fa-file-image"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">JPG to PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert images to PDF documents</p>
-                                <div
-                                    class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
+                            <h3 class="mb-2 text-xl font-semibold">Merge PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Combine multiple PDFs into one document
+                            </p>
+                            <div
+                                class="flex items-center mt-6 text-indigo-600 transition-colors dark:text-violet-600 group-hover:text-emerald-500 dark:group-hover:text-green-400">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <!-- Word to PDF -->
-                        <a href="/tools/convert-to-pdf/word-to-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                    <!-- Split PDF -->
+                    <a href="/tools/organizepdf/splitpdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-indigo-400/5 dark:from-indigo-600/5 dark:to-indigo-500/5">
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
+                                <i class="fas fa-cut"></i>
                             </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-400 dark:from-indigo-600 dark:to-indigo-500">
-                                    <i class="fas fa-file-word"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Word to PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert DOC/DOCX files to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-indigo-500 transition-colors dark:text-indigo-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
+                            <h3 class="mb-2 text-xl font-semibold">Split PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Separate PDF pages into individual files
+                            </p>
+                            <div
+                                class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <!-- Excel to PDF -->
-                        <a href="/tools/convert-to-pdf/excel-to-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                    <!-- Remove Pages -->
+                    <a href="/tools/organizepdf/removepages.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                <i class="fas fa-file"></i>
                             </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
-                                    <i class="fas fa-file-excel"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Excel to PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert XLS/XLSX files to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
+                            <h3 class="mb-2 text-xl font-semibold">Remove Pages</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Remove unwanted pages from a PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <!-- HTML to PDF -->
-                        <a href="/tools/convert-to-pdf/html-to-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                    <!-- Compress PDF -->
+                    <a href="/tools/organizepdf/compresspdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
+                                <i class="fas fa-compress"></i>
                             </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
-                                    <i class="fas fa-file-code"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">HTML to PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert HTML to PDF File</p>
-                                <div
-                                    class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
+                            <h3 class="mb-2 text-xl font-semibold">Compress PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Compress PDF files for smaller file
+                                sizes</p>
+                            <div
+                                class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <!-- Powerpoint to PDF -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                    <!-- Repair PDF -->
+                    <a href="/tools/organizepdf/repairpdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-yellow-400/5 dark:from-yellow-600/5 dark:to-yellow-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-400 dark:from-yellow-600 dark:to-yellow-500">
+                                <i class="fas fa-screwdriver-wrench"></i>
                             </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
-                                    <i class="fas fa-file-powerpoint"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Powerpoint to PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert Powerpoint to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
+                            <h3 class="mb-2 text-xl font-semibold">Repair PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Repair PDF files and fix errors</p>
+                            <div
+                                class="flex items-center mt-6 text-yellow-500 transition-colors dark:text-yellow-400 group-hover:text-yellow-600 dark:group-hover:text-yellow-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
                             </div>
-                        </a>
+                        </div>
+                    </a>
 
-                        <!-- TXT to PDF -->
-                        <a href="/tools/convert-to-pdf/txt-to-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                    <!-- Reorder PDF -->
+                    <a href="/tools/organizepdf/reorderpdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
                             <div
-                                class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                <i class="fas fa-sort-numeric-up"></i>
                             </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">TXT to PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert text files to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
+                            <h3 class="mb-2 text-xl font-semibold">Reorder PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Rearrange PDF pages in any order</p>
+                            <div
+                                class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
+
+                    <!-- JPG to PDF -->
+                    <a href="/tools/convert-to-pdf/jpg-to-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">JPG to PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert images to PDF documents</p>
+                            <div
+                                class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Word to PDF -->
+                    <a href="/tools/convert-to-pdf/word-to-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-indigo-400/5 dark:from-indigo-600/5 dark:to-indigo-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-400 dark:from-indigo-600 dark:to-indigo-500">
+                                <i class="fas fa-file-word"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Word to PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert DOC/DOCX files to PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-indigo-500 transition-colors dark:text-indigo-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Excel to PDF -->
+                    <a href="/tools/convert-to-pdf/excel-to-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Excel to PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert XLS/XLSX files to PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- HTML to PDF -->
+                    <a href="/tools/convert-to-pdf/html-to-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">HTML to PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert HTML to PDF File</p>
+                            <div
+                                class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Powerpoint to PDF -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
+                                <i class="fas fa-file-powerpoint"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Powerpoint to PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert Powerpoint to PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- TXT to PDF -->
+                    <a href="/tools/convert-to-pdf/txt-to-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">TXT to PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert text files to PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to JPG -->
+                    <a href="/tools/convert-from-pdf/pdf-to-jpeg.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to JPG</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert PDF to JPG images</p>
+                            <div
+                                class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to Word -->
+                    <a href="/tools/convert-from-pdf/pdf-to-word.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-indigo-400/5 dark:from-indigo-600/5 dark:to-indigo-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-400 dark:from-indigo-600 dark:to-indigo-500">
+                                <i class="fas fa-file-word"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to Word</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert PDF to Word document</p>
+                            <div
+                                class="flex items-center mt-6 text-indigo-500 transition-colors dark:text-indigo-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to Excel -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to Excel</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert PDF to Excel file</p>
+                            <div
+                                class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to Powerpoint -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
+                                <i class="fas fa-file-powerpoint"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to Powerpoint</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert Powerpoint to PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to HTML -->
+                    <a href="/tools/convert-from-pdf/pdf-to-html.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to HTML</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert PDF to HTML format</p>
+                            <div
+                                class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to TXT -->
+                    <a href="/tools/convert-from-pdf/pdf-to-txt.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to TXT</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert PDF to plain text</p>
+                            <div
+                                class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Crop PDF -->
+                    <a href="/tools/editpdf/crop-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
+                                <i class="fas fa-crop"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Crop PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Crop PDF images</p>
+                            <div
+                                class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Edit PDF -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                <i class="fas fa-pen-to-square"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Edit PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Edit PDF text</p>
+                            <div
+                                class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Add page numbers -->
+                    <a href="/tools/editpdf/page-number.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
+                                <i class="fas fa-pager"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Add page numbers</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Add page numbers to PDF</p>
+                            <div
+                                class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Rotate PDF -->
+                    <a href="/tools/editpdf/rotate-pdf.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-yellow-400/5 dark:from-yellow-600/5 dark:to-yellow-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-400 dark:from-yellow-600 dark:to-yellow-500">
+                                <i class="fas fa-rotate"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Rotate PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Rotate PDF pages</p>
+                            <div
+                                class="flex items-center mt-6 text-yellow-500 transition-colors dark:text-yellow-400 group-hover:text-yellow-600 dark:group-hover:text-yellow-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Add watermark -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-cyan-400/5 dark:from-cyan-600/5 dark:to-cyan-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-400 dark:from-cyan-600 dark:to-cyan-500">
+                                <i class="fas fa-marker"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Add watermark</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Add watermark to PDF</p>
+                            <div
+                                class="flex items-center mt-6 transition-colors text-cyan-500 dark:text-cyan-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- PDF to Booklet -->
+                    <a href="/tools/editpdf/booklet.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-400/5 dark:from-orange-600/5 dark:to-orange-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-orange-500 to-orange-400 dark:from-orange-600 dark:to-orange-500">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">PDF to Booklet</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Convert PDF to booklet format</p>
+                            <div
+                                class="flex items-center mt-6 text-orange-500 transition-colors dark:text-orange-400 group-hover:text-orange-600 dark:group-hover:text-orange-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Protect PDF -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
+                                <i class="fas fa-shield-halved"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Protect PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Protect PDF files and Encrypt PDF files
+                            </p>
+                            <div
+                                class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Unlock PDF -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
+                                <i class="fas fa-unlock"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Unlock PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Unlock your PDF files</p>
+                            <div
+                                class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Sign PDF -->
+                    <a href="/Updates/comingsoon.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
+                                <i class="fas fa-signature"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Sign PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Signature your PDF files</p>
+                            <div
+                                class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Redact PDF -->
+                    <a href="/tools/securitypdf/redact.html"
+                        class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div
+                                class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
+                                <i class="fas fa-marker"></i>
+                            </div>
+                            <h3 class="mb-2 text-xl font-semibold">Redact PDF</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Permanently remove sensitive information
+                            </p>
+                            <div
+                                class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+                                <span class="mr-2 font-medium">Try Now</span>
+                                <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-
-                <!-- Convert from PDF Tab -->
-                <div class="hidden tab-pane" id="convert2">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        <!-- PDF to JPG -->
-                        <a href="/tools/convert-from-pdf/pdf-to-jpeg.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
-                                    <i class="fas fa-file-image"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to JPG</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert PDF to JPG images</p>
-                                <div
-                                    class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- PDF to Word -->
-                        <a href="/tools/convert-from-pdf/pdf-to-word.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-indigo-400/5 dark:from-indigo-600/5 dark:to-indigo-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-400 dark:from-indigo-600 dark:to-indigo-500">
-                                    <i class="fas fa-file-word"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to Word</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert PDF to Word document</p>
-                                <div
-                                    class="flex items-center mt-6 text-indigo-500 transition-colors dark:text-indigo-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- PDF to Excel -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
-                                    <i class="fas fa-file-excel"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to Excel</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert PDF to Excel file</p>
-                                <div
-                                    class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- PDF to Powerpoint -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
-                                    <i class="fas fa-file-powerpoint"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to Powerpoint</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert Powerpoint to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- PDF to HTML -->
-                        <a href="/tools/convert-from-pdf/pdf-to-html.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
-                                    <i class="fas fa-file-code"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to HTML</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert PDF to HTML format</p>
-                                <div
-                                    class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- PDF to TXT -->
-                        <a href="/tools/convert-from-pdf/pdf-to-txt.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to TXT</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert PDF to plain text</p>
-                                <div
-                                    class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Edit PDF Tab -->
-                <div class="hidden tab-pane" id="edit">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        <!-- Crop PDF -->
-                        <a href="/tools/editpdf/crop-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
-                                    <i class="fas fa-crop"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Crop PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Crop PDF images</p>
-                                <div
-                                    class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Edit PDF -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
-                                    <i class="fas fa-pen-to-square"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Edit PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Edit PDF text</p>
-                                <div
-                                    class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Add page numbers -->
-                        <a href="/tools/editpdf/page-number.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-400/5 dark:from-purple-600/5 dark:to-purple-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 dark:from-purple-600 dark:to-purple-500">
-                                    <i class="fas fa-pager"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Add page numbers</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Add page numbers to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 text-purple-500 transition-colors dark:text-purple-400 group-hover:text-purple-600 dark:group-hover:text-purple-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Rotate PDF -->
-                        <a href="/tools/editpdf/rotate-pdf.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-yellow-400/5 dark:from-yellow-600/5 dark:to-yellow-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-400 dark:from-yellow-600 dark:to-yellow-500">
-                                    <i class="fas fa-rotate"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Rotate PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Rotate PDF pages</p>
-                                <div
-                                    class="flex items-center mt-6 text-yellow-500 transition-colors dark:text-yellow-400 group-hover:text-yellow-600 dark:group-hover:text-yellow-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Add watermark -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-cyan-400/5 dark:from-cyan-600/5 dark:to-cyan-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-400 dark:from-cyan-600 dark:to-cyan-500">
-                                    <i class="fas fa-marker"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Add watermark</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Add watermark to PDF</p>
-                                <div
-                                    class="flex items-center mt-6 transition-colors text-cyan-500 dark:text-cyan-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- PDF to Booklet -->
-                        <a href="/tools/editpdf/booklet.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-400/5 dark:from-orange-600/5 dark:to-orange-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-orange-500 to-orange-400 dark:from-orange-600 dark:to-orange-500">
-                                    <i class="fas fa-book"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">PDF to Booklet</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Convert PDF to booklet format</p>
-                                <div
-                                    class="flex items-center mt-6 text-orange-500 transition-colors dark:text-orange-400 group-hover:text-orange-600 dark:group-hover:text-orange-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- PDF Security Tab -->
-                <div class="hidden tab-pane" id="security">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        <!-- Protect PDF -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-400/5 dark:from-red-600/5 dark:to-red-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-red-500 to-red-400 dark:from-red-600 dark:to-red-500">
-                                    <i class="fas fa-shield-halved"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Protect PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Protect PDF files and Encrypt PDF files
-                                </p>
-                                <div
-                                    class="flex items-center mt-6 text-red-500 transition-colors dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Unlock PDF -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-400/5 dark:from-green-600/5 dark:to-green-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-green-500 to-green-400 dark:from-green-600 dark:to-green-500">
-                                    <i class="fas fa-unlock"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Unlock PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Unlock your PDF files</p>
-                                <div
-                                    class="flex items-center mt-6 text-green-500 transition-colors dark:text-green-400 group-hover:text-green-600 dark:group-hover:text-green-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Sign PDF -->
-                        <a href="/Updates/comingsoon.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-400/5 dark:from-blue-600/5 dark:to-blue-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500">
-                                    <i class="fas fa-signature"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Sign PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Signature your PDF files</p>
-                                <div
-                                    class="flex items-center mt-6 text-blue-500 transition-colors dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Redact PDF -->
-                        <a href="/tools/securitypdf/redact.html"
-                            class="relative overflow-hidden transition-all duration-300 transform bg-white shadow-xl group dark:bg-slate-800 rounded-2xl hover:shadow-2xl hover:-translate-y-2 animate-on-scroll">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-gray-400/5 dark:from-gray-600/5 dark:to-gray-500/5">
-                            </div>
-                            <div class="relative z-10 p-6">
-                                <div
-                                    class="flex items-center justify-center w-16 h-16 mb-6 text-2xl text-white rounded-xl bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-600 dark:to-gray-500">
-                                    <i class="fas fa-marker"></i>
-                                </div>
-                                <h3 class="mb-2 text-xl font-semibold">Redact PDF</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Permanently remove sensitive information
-                                </p>
-                                <div
-                                    class="flex items-center mt-6 text-gray-500 transition-colors dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
-                                    <span class="mr-2 font-medium">Try Now</span>
-                                    <i class="transition-transform fas fa-arrow-right group-hover:translate-x-1"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
             </div>
         </section>
-
-
-
 
         <!-- CTA Section -->
         <section
@@ -1051,8 +1006,6 @@
         </div>
     </footer>
 
-
-
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
@@ -1063,89 +1016,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            setupTabGroup('.tab-btn', '.tab-pane');                // PDF Tools
-            setupTabGroup('.tab-btn', '.image-tab-pane');          // Image Tools
-            activateFirstTab('.tab-btn');                          // Auto-activate first tab
             setupLiveSearch();                                     // Search bar activation
+            animateToolsOnLoad();                                 // Animate tools on page load
         });
 
         /**
-         * Auto-click the first tab in a group
+         * Animate tools when page loads
          */
-        function activateFirstTab(tabSelector) {
-            const firstTab = document.querySelector(tabSelector);
-            if (firstTab) firstTab.click();
-        }
-
-        /**
-         * Setup a tab group with GSAP animation
-         */
-        function setupTabGroup(tabSelector, paneSelector) {
-            const tabs = document.querySelectorAll(tabSelector);
-            const panes = document.querySelectorAll(paneSelector);
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const targetId = tab.getAttribute('data-tab');
-                    const currentSection = tab.closest('section');
-
-                    // Deactivate all tabs
-                    tabs.forEach(t => {
-                        if (t.closest('section') === currentSection) {
-                            t.classList.remove(
-                                'bg-indigo-600/10', 'dark:bg-violet-600/10',
-                                'text-indigo-600', 'dark:text-violet-600',
-                                'border-indigo-600', 'dark:border-violet-600',
-                                'border-2'
-                            );
-                            t.classList.add(
-                                'text-gray-600', 'dark:text-gray-400',
-                                'border-transparent', 'hover:border-gray-300',
-                                'dark:hover:border-gray-600'
-                            );
-                        }
-                    });
-
-                    // Activate clicked tab
-                    tab.classList.remove(
-                        'text-gray-600', 'dark:text-gray-400',
-                        'border-transparent', 'hover:border-gray-300',
-                        'dark:hover:border-gray-600'
-                    );
-                    tab.classList.add(
-                        'bg-indigo-600/10', 'dark:bg-violet-600/10',
-                        'text-indigo-600', 'dark:text-violet-600',
-                        'border-indigo-600', 'dark:border-violet-600',
-                        'border-2'
-                    );
-
-                    // Hide all panes
-                    panes.forEach(pane => {
-                        if (pane.closest('section') === currentSection) {
-                            pane.classList.add('hidden');
-                            pane.classList.remove('block');
-                        }
-                    });
-
-                    // Show and animate the selected pane
-                    const activePane = currentSection.querySelector(`#${targetId}`);
-                    if (activePane) {
-                        activePane.classList.remove('hidden');
-                        activePane.classList.add('block');
-
-                        const cards = activePane.querySelectorAll('.animate-on-scroll');
-                        if (cards.length) {
-                            gsap.set(cards, { opacity: 0, y: 40 });
-                            gsap.to(cards, {
-                                opacity: 1,
-                                y: 0,
-                                duration: 0.6,
-                                ease: 'power2.out',
-                                stagger: 0.08
-                            });
-                        }
-                    }
-                });
+        function animateToolsOnLoad() {
+            const tools = document.querySelectorAll('.animate-on-scroll');
+            gsap.set(tools, { opacity: 0, y: 40 });
+            gsap.to(tools, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: 'power2.out',
+                stagger: 0.08
             });
         }
 
@@ -1203,8 +1089,5 @@
             });
         }
     </script>
-
-
 </body>
-
 </html>
